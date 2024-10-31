@@ -77,7 +77,7 @@ const ThankYou = (p: Wizard.StepProps) => {
         </Trans>
       </BeforeSubmitText>
 
-      <CardLink href="https://virufy.org/ja/">アプリを閉じる</CardLink> {/* Replace the link and label as necessary */}
+      <CardLink href="https://virufy.org/ja/" target="_self">アプリを閉じる</CardLink> {/* Replace the link and label as necessary */}
 
     </ThankYouLayout>
   );

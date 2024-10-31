@@ -63,7 +63,7 @@ const baseButton = css`
   border-radius: 15px;
 `;
 
-export const CardLink = styled.a.attrs(() => ({ target: '_blank', rel: 'noopener noreferrer' }))`
+export const CardLink = styled.a`
   ${baseButton}
   display: block;
   &:hover {
