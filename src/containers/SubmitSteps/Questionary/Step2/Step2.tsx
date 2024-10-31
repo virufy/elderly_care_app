@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import usePortal from 'react-useportal';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 
 // Form
 import { useForm, Controller } from 'react-hook-form';
@@ -20,9 +20,9 @@ import useHeaderContext from 'hooks/useHeaderContext';
 import { scrollToTop } from 'helper/scrollHelper';
 
 // Components
-import ProgressIndicator from 'components/ProgressIndicator';
 import OptionList from 'components/OptionList';
 import WizardButtons from 'components/WizardButtons';
+import ProgressIndicator from 'components/ProgressIndicator';
 
 // Icons
 import { ReactComponent as ExclamationSVG } from 'assets/icons/exclamationCircle.svg';
@@ -34,15 +34,17 @@ import {
 } from '../style';
 
 const schema = Yup.object({
-  biologicalSex: Yup.string().required('biologicalSexRequired'),
+  currentSymptoms: Yup.array().of(Yup.string().required()).required('currentSymptomsRequired').default([])
+    .test('SelecteOne', 'Select one', v => !(!!v && v.length > 1 && (v.includes('none')))),
 }).defined();
 
-type Step2Type = Yup.InferType<typeof schema>;
+type Step5aType = Yup.InferType<typeof schema>;
 
 const Step2 = ({
   previousStep,
   nextStep,
   storeKey,
+  otherSteps,
   metadata,
 }: Wizard.StepProps) => {
   // Hooks
@@ -67,11 +69,7 @@ const Step2 = ({
     defaultValues: state?.[storeKey],
     resolver: yupResolver(schema),
   });
-  const { errors } = formState;
-
-  const {
-    isValid,
-  } = formState;
+  const { errors, isValid } = formState;
 
   const handleDoBack = React.useCallback(() => {
     setActiveStep(false);
@@ -84,16 +82,35 @@ const Step2 = ({
 
   useEffect(() => {
     scrollToTop();
-    setTitle(`${t('questionary:biologicalSex.title')}`);
+    setTitle(`${t('questionary:symptoms.title')}`);
     setType('primary');
     setDoGoBack(() => handleDoBack);
     setSubtitle('');
   }, [handleDoBack, setDoGoBack, setTitle, setSubtitle, setType, metadata, t]);
 
   // Handlers
-  const onSubmit = async (values: Step2Type) => {
+  const onSubmit = async (values: Step5aType) => {
     if (values) {
+      const {
+        currentSymptoms,
+      } = (values as any);
+
       action(values);
+
+      const covidSymptoms = ['dryCough', 'wetCough', 'feverChillsSweating', 'worseCough', 'breathShortness'];
+
+      let output = false;
+      // eslint-disable-next-line no-plusplus
+      for (let index = 0; !output && index < currentSymptoms?.length; index++) {
+        output = covidSymptoms.includes(currentSymptoms[index]);
+      }
+
+      if (output && otherSteps) {
+        setActiveStep(false);
+        history.push(otherSteps.covidSymptomsStep);
+        return;
+      }
+
       if (nextStep) {
         setActiveStep(false);
         history.push(nextStep);
@@ -108,44 +125,111 @@ const Step2 = ({
         totalSteps={metadata?.total}
         progressBar
       />
-      <QuestionText first hasNote>
-        {t('questionary:biologicalSex.question')}
+      <QuestionText extraSpace first>
+        <Trans i18nKey="questionary:symptoms.question">
+          <strong>Which of the below symptoms do you currently have?</strong>
+        </Trans>
+        <QuestionNote>{t('questionary:allThatApply')}</QuestionNote>
       </QuestionText>
-      <QuestionNote>{t('questionary:biologicalSex.note')}</QuestionNote>
       <Controller
         control={control}
-        name="biologicalSex"
-        defaultValue=""
+        name="currentSymptoms"
+        defaultValue={[]}
         render={({ onChange, value }) => (
           <OptionList
-            singleSelection
-            value={{ selected: value ? [value] : [] }}
-            onChange={v => onChange(v.selected[0])}
+            isCheckbox
+            value={{ selected: value }}
+            onChange={v => onChange(v.selected)}
             items={[
               {
-                value: 'male',
-                label: t('questionary:biologicalSex.options.male'),
+                value: 'none',
+                label: t('questionary:symptoms.options.none'),
               },
               {
-                value: 'female',
-                label: t('questionary:biologicalSex.options.female'),
+                value: 'bodyAches',
+                label: t('questionary:symptoms.options.bodyAches'),
               },
               {
-                value: 'notToSay',
-                label: t('questionary:biologicalSex.options.notToSay'),
+                value: 'dryCough',
+                label: t('questionary:symptoms.options.dryCough'),
+              },
+              {
+                value: 'wetCough',
+                label: t('questionary:symptoms.options.wetCough'),
+              },
+              {
+                value: 'feverChillsSweating',
+                label: t('questionary:symptoms.options.feverChillsSweating'),
+              },
+              {
+                value: 'headaches',
+                label: t('questionary:symptoms.options.headaches'),
+              },
+              {
+                value: 'tasteOrSmellDisorder',
+                label: t('questionary:symptoms.options.tasteOrSmellDisorder'),
+              },
+              {
+                value: 'runnyNose',
+                label: t('questionary:symptoms.options.runnyNose'),
+              },
+              {
+                value: 'breathShortness',
+                label: t('questionary:symptoms.options.breathShortness'),
+              },
+              {
+                value: 'soreThroat',
+                label: t('questionary:symptoms.options.soreThroat'),
+              },
+              {
+                value: 'chestTightness',
+                label: t('questionary:symptoms.options.chestTightness'),
+              },
+              {
+                value: 'palpitations',
+                label: t('questionary:symptoms.options.palpitations'),
+              },
+              {
+                value: 'chestDiscomfort',
+                label: t('questionary:symptoms.options.chestDiscomfort'),
+              },
+              {
+                value: 'vomitingAndDiarrhea',
+                label: t('questionary:symptoms.options.vomitingAndDiarrhea'),
+              },
+              {
+                value: 'weakness',
+                label: t('questionary:symptoms.options.weakness'),
+              },
+              {
+                value: 'fatigue',
+                label: t('questionary:symptoms.options.fatigue'),
+              },
+              {
+                value: 'appetiteLoss',
+                label: t('questionary:symptoms.options.appetiteLoss'),
+              },
+              {
+                value: 'rash',
+                label: t('questionary:symptoms.options.rash'),
+              },
+              {
+                value: 'other',
+                label: t('questionary:symptoms.options.other'),
               },
             ]}
+            excludableValues={['none']}
           />
         )}
       />
       {/* Bottom Buttons */}
       <ErrorMessage
         errors={errors}
-        name="biologicalSex"
+        name="currentSymptoms"
         render={({ message }) => (
           <TextErrorContainer>
             <ExclamationSVG />
-            {t(`main:${message}`, 'Please select an option')}
+            {t(`main:${message}`, 'Please select at least one option')}
           </TextErrorContainer>
         )}
       />
@@ -153,8 +237,8 @@ const Step2 = ({
         <Portal>
           <WizardButtons
             leftLabel={t('questionary:nextButton')}
-            leftHandler={handleSubmit(onSubmit)}
             leftDisabled={!isValid}
+            leftHandler={handleSubmit(onSubmit)}
             invert
           />
         </Portal>

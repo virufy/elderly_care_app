@@ -20,30 +20,20 @@ import {
   CardLink 
 } from './style';
 
-interface ThankYouLocation {
-  submissionId: string;
-  patientId?: string;
-}
-
 const ThankYou = (p: Wizard.StepProps) => {
   const { t } = useTranslation();
-
   const [, setActiveStep] = useState(true);
   const { setDoGoBack, setTitle, setType } = useHeaderContext();
-  // Ryuma Change
-  // const { action } = useStateMachine(resetStore());
-  const { state, action } = useStateMachine(); // Access state and action from little-state-machine
-
+  const { state, action } = useStateMachine();
   const history = useHistory();
-  
-  // Ryuma Change
-  // React.useEffect(() => {
-  //   action({});
-  // }, [action]);
+
   // Function to handle resetting the form
-  const handleReset = () => {
-    action(resetStore()); // This will reset the entire form state
-  };
+  const handleReset = useCallback(() => {
+    action(resetStore()); // Reset the state in little-state-machine
+    localStorage.clear(); // Clear local storage
+    console.log('Reset State:', state);
+    console.log('LocalStorage after reset:', localStorage);
+  }, [action, state]);
 
   const handleDoBack = useCallback(() => {
     if (p.previousStep) {
@@ -60,14 +50,16 @@ const ThankYou = (p: Wizard.StepProps) => {
     setTitle('');
     setType('tertiary');
     setDoGoBack(null);
-  }, [handleDoBack, setDoGoBack, setTitle, setType]);
+    handleReset();
+
+  }, [handleDoBack, setDoGoBack, setTitle, setType, handleReset]);
 
   return (
     <ThankYouLayout>
       <ThankYouTitle>{t('thankyou:title')}</ThankYouTitle>
       <BeforeSubmitText $centered><Trans i18nKey="thankyou:paragraph1" /></BeforeSubmitText>
       <SubmissionIdBox>
-        <Trans i18nKey="thankyou:paragraph2">
+        <Trans i18nKey="thankyou:paragraph2"> 
           Your unique submission ID:
           <br />
           <strong>{{ submissionId: Math.floor(100000 + Math.random() * 900000) }}</strong>
@@ -87,15 +79,6 @@ const ThankYou = (p: Wizard.StepProps) => {
 
       <CardLink href="https://virufy.org/ja/">アプリを閉じる</CardLink> {/* Replace the link and label as necessary */}
 
-      {/* Ryuma Change */}
-      <div>
-        <h2>Debug: Visualize all collected JSON data:</h2>
-        {/* Display the stored data for debugging */}
-        <pre>{JSON.stringify(state, null, 2)}</pre>
-
-        {/* Button to reset the store */}
-        <button onClick={handleReset}>Reset/Erase Stored Data</button>
-      </div>
     </ThankYouLayout>
   );
 };

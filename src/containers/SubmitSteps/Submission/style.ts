@@ -131,3 +131,27 @@ export const ImageProcessing = styled(ProcessingSVG)`
     width: 100%;
   }
 `;
+
+export const TextErrorContainer = styled.div`
+  width: 100%;
+  margin: 10px auto 0;
+
+  text-align: left;
+  color: #FF0000;
+  display: flex;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  svg {
+    margin-right: 5px;
+    fill: #FF0000;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+
+  @media screen and (${props => props.theme.breakpoints.tablet}){
+    padding: 0;
+  }
+`;

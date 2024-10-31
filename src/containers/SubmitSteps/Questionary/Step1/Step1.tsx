@@ -111,8 +111,8 @@ const Step1 = ({
   return (
     <MainContainer>
       <ProgressIndicator
-        currentStep={1}
-        totalSteps={3}
+        currentStep={metadata?.current}
+        totalSteps={metadata?.total}
         progressBar
       />
       <QuestionText first hasNote>

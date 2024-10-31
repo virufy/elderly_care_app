@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import usePortal from 'react-useportal';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 // Form
 import { useForm, Controller } from 'react-hook-form';
@@ -14,14 +14,14 @@ import * as Yup from 'yup';
 import { updateAction } from 'utils/wizard';
 
 // Components
-import OptionList from 'components/OptionList';
 import ProgressIndicator from 'components/ProgressIndicator';
+import OptionList from 'components/OptionList';
 import WizardButtons from 'components/WizardButtons';
 
 // Icons
 import { ReactComponent as ExclamationSVG } from 'assets/icons/exclamationCircle.svg';
 
-// Header Control
+// Hooks
 import useHeaderContext from 'hooks/useHeaderContext';
 
 // Utils
@@ -30,14 +30,14 @@ import { scrollToTop } from 'helper/scrollHelper';
 // Styles
 import { TextErrorContainer } from 'containers/Welcome/style';
 import {
-  QuestionText, MainContainer,
+  QuestionText, MainContainer, QuestionAllApply,
 } from '../style';
 
 const schema = Yup.object({
-  vaccine: Yup.string().required('vaccineRequired'),
+  currentMedicalCondition: Yup.object().required('currentMedicalConditionRequired'),
 }).defined();
 
-type Step3Type = Yup.InferType<typeof schema>;
+type Step6Type = Yup.InferType<typeof schema>;
 
 const Step3 = ({
   previousStep,
@@ -50,7 +50,7 @@ const Step3 = ({
     bindTo: document && document.getElementById('wizard-buttons') as HTMLDivElement,
   });
   const {
-    setDoGoBack, setTitle, setSubtitle, setType,
+    setDoGoBack, setTitle, setType, setSubtitle,
   } = useHeaderContext();
   const history = useHistory();
   const { t } = useTranslation();
@@ -67,8 +67,9 @@ const Step3 = ({
     defaultValues: state?.[storeKey],
     resolver: yupResolver(schema),
   });
-  const { errors } = formState;
+  const { errors, isValid } = formState;
 
+  /*  */
   const handleDoBack = React.useCallback(() => {
     setActiveStep(false);
     if (previousStep) {
@@ -78,20 +79,16 @@ const Step3 = ({
     }
   }, [history, previousStep]);
 
-  const {
-    isValid,
-  } = formState;
-
   useEffect(() => {
     scrollToTop();
-    setTitle(`${t('questionary:vaccine.title')}`);
-    setType('primary');
-    setSubtitle('');
+    setTitle(`${t('questionary:respiration.title')}`);
+    setType('primaryBlue');
     setDoGoBack(() => handleDoBack);
-  }, [handleDoBack, setDoGoBack, setTitle, setSubtitle, setType, metadata, t]);
+    setSubtitle(t('questionary:respiration:subtitle'));
+  }, [handleDoBack, setDoGoBack, setSubtitle, setTitle, setType, metadata, t]);
 
   // Handlers
-  const onSubmit = async (values: Step3Type) => {
+  const onSubmit = async (values: Step6Type) => {
     if (values) {
       action(values);
       if (nextStep) {
@@ -108,54 +105,104 @@ const Step3 = ({
         totalSteps={metadata?.total}
         progressBar
       />
-      <QuestionText first>{t('questionary:vaccine.question')}
+      <QuestionText extraSpace first >
+        <Trans i18nKey="questionary:medical.question">
+          <strong>Which of the below medical conditions do you currently have?</strong>
+        </Trans>
+        <QuestionAllApply>{t('questionary:allThatApply')}</QuestionAllApply>
       </QuestionText>
+
       <Controller
         control={control}
-        name="vaccine"
-        defaultValue=""
+        name="currentMedicalCondition"
+        defaultValue={{ selected: [], other: '' }}
         render={({ onChange, value }) => (
           <OptionList
-            singleSelection
-            value={{ selected: value ? [value] : [] }}
-            onChange={v => onChange(v.selected[0])}
+            isCheckbox
+            value={value}
+            onChange={v => onChange(v)}
             items={[
               {
-                value: 'one',
-                label: t('questionary:vaccine.options.1'),
+                value: 'none',
+                label: t('questionary:medical.options.none'),
               },
               {
-                value: 'two',
-                label: t('questionary:vaccine.options.2'),
+                value: 'asthma',
+                label: t('questionary:medical.options.asthma'),
               },
               {
-                value: 'three',
-                label: t('questionary:vaccine.options.3'),
+                value: 'bronchitis',
+                label: t('questionary:medical.options.bronchitis'),
               },
               {
-                value: 'four',
-                label: t('questionary:vaccine.options.4'),
+                value: 'copdEmphysema',
+                label: t('questionary:medical.options.emphysema'),
               },
               {
-                value: 'false',
-                label: t('questionary:vaccine.options.no'),
+                value: 'otherChronic',
+                label: t('questionary:medical.options.otherChronic'),
               },
               {
-                value: 'decline',
-                label: t('questionary:vaccine.options.decline'),
+                value: 'pneumonia',
+                label: t('questionary:medical.options.pneumonia'),
+              },
+              {
+                value: 'tuberculosis',
+                label: t('questionary:medical.options.tuberculosis'),
+              },
+              {
+                value: 'cysticFibrosis',
+                label: t('questionary:medical.options.cysticFibrosis'),
+              },
+              {
+                value: 'hivAidsOrImpairedImmuneSystem',
+                label: t('questionary:medical.options.hiv'),
+              },
+              {
+                value: 'congestiveHeart',
+                label: t('questionary:medical.options.congestiveHeart'),
+              },
+              {
+                value: 'coughCausedByOther',
+                label: t('questionary:medical.options.cough'),
+              },
+              {
+                value: 'extremeObesity',
+                label: t('questionary:medical.options.obesity'),
+              },
+              {
+                value: 'sinusitis',
+                label: t('questionary:medical.options.sinusitis'),
+              },
+              {
+                value: 'pulmonary',
+                label: t('questionary:medical.options.pulmonary'),
+              },
+              {
+                value: 'heartValveDisease',
+                label: t('questionary:medical.options.heartValveDisease'),
+              },
+              {
+                value: 'pregnancy',
+                label: t('questionary:medical.options.pregnancy'),
+              },
+              {
+                value: 'other',
+                label: t('questionary:medical.options.other'),
               },
             ]}
+            excludableValues={['none']}
           />
         )}
       />
       {/* Bottom Buttons */}
       <ErrorMessage
         errors={errors}
-        name="vaccine"
+        name="currentMedicalCondition"
         render={({ message }) => (
           <TextErrorContainer>
             <ExclamationSVG />
-            {t(`main:${message}`, 'Please select an option')}
+            {t(`main:${message}`, 'Please select at least one option')}
           </TextErrorContainer>
         )}
       />
@@ -163,8 +210,8 @@ const Step3 = ({
         <Portal>
           <WizardButtons
             leftLabel={t('questionary:nextButton')}
-            leftHandler={handleSubmit(onSubmit)}
             leftDisabled={!isValid}
+            leftHandler={handleSubmit(onSubmit)}
             invert
           />
         </Portal>

@@ -20,8 +20,6 @@ import useHeaderContext from 'hooks/useHeaderContext';
 import { scrollToTop } from 'helper/scrollHelper';
 
 // Components
-import ProgressIndicator from 'components/ProgressIndicator';
-import OptionList from 'components/OptionList';
 import WizardButtons from 'components/WizardButtons';
 
 // Icons
@@ -29,27 +27,27 @@ import { ReactComponent as ExclamationSVG } from 'assets/icons/exclamationCircle
 
 // Styles
 import { TextErrorContainer } from 'containers/Welcome/style';
-import {
-  QuestionText, QuestionNote, MainContainer, QuestionInput,
-} from '../style';
+import {QuestionText, MainContainer, QuestionInput,} from '../style';
 
 const schema = Yup.object({
-  smokeLastSixMonths: Yup.string().required('smokeLastSixMonthsRequired'),
+  feverStartDate: Yup.string().required('Fever start date required'),
+  coughStartDate: Yup.string().required('Cough start date required'),
 }).defined();
 
-type Step4Type = Yup.InferType<typeof schema>;
+type Step5bType = Yup.InferType<typeof schema>;
 
 const Step4 = ({
   previousStep,
   nextStep,
   storeKey,
-  metadata,
 }: Wizard.StepProps) => {
   // Hooks
   const { Portal } = usePortal({
     bindTo: document && document.getElementById('wizard-buttons') as HTMLDivElement,
   });
-  const { setDoGoBack, setTitle, setType } = useHeaderContext();
+  const {
+    setDoGoBack, setTitle, setType, setSubtitle,
+  } = useHeaderContext();
   const history = useHistory();
   const { t } = useTranslation();
   const { state, action } = useStateMachine(updateAction(storeKey));
@@ -67,10 +65,9 @@ const Step4 = ({
   });
   const { errors } = formState;
 
-  const {
-    isValid,
-  } = formState;
+  const { isSubmitting, isValid } = formState;
 
+  // Handlers
   const handleDoBack = React.useCallback(() => {
     setActiveStep(false);
     if (previousStep) {
@@ -80,15 +77,7 @@ const Step4 = ({
     }
   }, [history, previousStep]);
 
-  useEffect(() => {
-    scrollToTop();
-    setTitle(`${t('questionary:smokeLastSixMonths.title')}`);
-    setType('primary');
-    setDoGoBack(() => handleDoBack);
-  }, [handleDoBack, setDoGoBack, setTitle, setType, metadata, t]);
-
-  // Handlers
-  const onSubmit = async (values: Step4Type) => {
+  const onSubmit = async (values: Step5bType) => {
     if (values) {
       action(values);
       if (nextStep) {
@@ -98,45 +87,22 @@ const Step4 = ({
     }
   };
 
+  useEffect(() => {
+    scrollToTop();
+    setTitle('咳、発熱');
+    setType('primary');
+    setDoGoBack(() => handleDoBack);
+    setSubtitle('');
+  }, [handleDoBack, setDoGoBack, setTitle, setSubtitle, setType, t]);
+
   return (
     <MainContainer>
-      <ProgressIndicator
-        currentStep={metadata?.current}
-        totalSteps={metadata?.total}
-        progressBar
-      />
       <QuestionText extraSpace first>
-        {t('questionary:smokeLastSixMonths.question')}
-        <QuestionNote>{t('questionary:smokeLastSixMonths.note')}</QuestionNote>
+        何日前から発熱の症状が出始めましたか？
       </QuestionText>
       <Controller
         control={control}
-        name="smokeLastSixMonths"
-        defaultValue=""
-        render={({ onChange, value }) => (
-          <OptionList
-            singleSelection
-            value={{ selected: value ? [value] : [] }}
-            onChange={v => onChange(v.selected[0])}
-            items={[
-              {
-                value: 'true',
-                label: t('questionary:smokeLastSixMonths.options.yes'),
-              },
-              {
-                value: 'false',
-                label: t('questionary:smokeLastSixMonths.options.no'),
-              },
-            ]}
-          />
-        )}
-      />
-
-      <QuestionText extraSpace>{t('questionary:smokeLastSixMonths.question2')}</QuestionText>
-
-      <Controller
-        control={control}
-        name="yearsSmoking"
+        name="feverStartDate"
         defaultValue=""
         render={({ onChange, value, name }) => (
           <QuestionInput
@@ -144,7 +110,7 @@ const Step4 = ({
             value={value}
             onChange={onChange}
             type="number"
-            placeholder={t('questionary:smokeLastSixMonths.enterYears')}
+            placeholder={t('questionary:enterDays')}
             autoComplete="Off"
           />
         )}
@@ -152,20 +118,49 @@ const Step4 = ({
       {/* Bottom Buttons */}
       <ErrorMessage
         errors={errors}
-        name="smokeLastSixMonths"
+        name="feverStartDate"
         render={({ message }) => (
           <TextErrorContainer>
             <ExclamationSVG />
-            {t(`main:${message}`, 'Please select an option')}
+            {t(`main:${message}`, 'Please enter the days')}
+          </TextErrorContainer>
+        )}
+      />
+      <QuestionText extraSpace>
+        何日前から咳の症状が出始めましたか？
+      </QuestionText>
+      <Controller
+        control={control}
+        name="coughStartDate"
+        defaultValue=""
+        render={({ onChange, value, name }) => (
+          <QuestionInput
+            name={name}
+            value={value}
+            onChange={onChange}
+            type="number"
+            placeholder={t('questionary:enterDays')}
+            autoComplete="Off"
+          />
+        )}
+      />
+      {/* Bottom Buttons */}
+      <ErrorMessage
+        errors={errors}
+        name="coughStartDate"
+        render={({ message }) => (
+          <TextErrorContainer>
+            <ExclamationSVG />
+            {t(`main:${message}`, 'Please enter the days')}
           </TextErrorContainer>
         )}
       />
       {activeStep && (
         <Portal>
           <WizardButtons
-            leftLabel={t('questionary:nextButton')}
-            leftHandler={handleSubmit(onSubmit)}
+            leftLabel={isSubmitting ? t('questionary:submitting') : t('beforeSubmit:submitButton')}
             leftDisabled={!isValid}
+            leftHandler={handleSubmit(onSubmit)}
             invert
           />
         </Portal>
