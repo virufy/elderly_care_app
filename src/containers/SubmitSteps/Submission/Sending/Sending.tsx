@@ -118,8 +118,8 @@ const Sending = (p: Wizard.StepProps) => {
     setTitle('');
     setType('tertiary');
     setDoGoBack(null);
-    // sendDataToBackend();
-    mocksendDataToBackend();
+    sendDataToBackend();
+    // mocksendDataToBackend();
   }, [handleDoBack, setDoGoBack, setTitle, setType, sendDataToBackend, mocksendDataToBackend]);
 
   return (
