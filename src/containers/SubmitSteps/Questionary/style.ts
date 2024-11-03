@@ -69,7 +69,8 @@ export const QuestionAllApply = styled.span`
 
 export const QuestionText = styled.p<{extraSpace?: boolean; first?: boolean; hasNote?: boolean; rare?: boolean; bold?: boolean; }>`
   font-family: "Source Sans Pro";
-  font-size: 1rem;
+  text-align: left;
+  font-size: 18px;
   line-height: 1.375rem;
   font-weight: ${({ bold }) => ((bold || bold === undefined) ? 700 : 400)};
   margin-top: ${({ first }) => (first ? '0px' : '40px')};
@@ -78,13 +79,13 @@ export const QuestionText = styled.p<{extraSpace?: boolean; first?: boolean; has
 `;
 export const QuestionNote = styled.span`
   font-family: "Source Sans Pro";
-  font-size: 12px;
+  font-size: 13px;
   line-height: 142.69%;
   font-weight: normal;
   margin-bottom: 32px;
   color: ${props => props.theme.colors.black};
   display: block;
-  text-align: left;
+  text-align: left !important;
 
   @media screen and (${props => props.theme.breakpoints.tablet}){
     font-size: 1rem;

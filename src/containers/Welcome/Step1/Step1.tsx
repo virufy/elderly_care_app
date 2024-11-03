@@ -33,7 +33,7 @@ import {
 } from '../style';
 
 
-const facilityList = ['福岡市博多区老人施設デイズ', 'その他']
+const facilityList = ['笑楽日', 'その他']
 const locationList = ['居室','個室部屋', '共同部屋','食堂','談話室（レクリエーションルーム）','スタッフルーム','屋外','その他']
 
 const facilityOptions = facilityList.map(facility => ({ label: facility, value: facility }));
@@ -72,26 +72,8 @@ const Step1 = (p: Wizard.StepProps) => {
     }
   }, [store, reset]);
 
-    // Load values from localStorage under 'elderly_care-wizard'
-    // useEffect(() => {
-    //   const elderlyCareWizard = localStorage.getItem('elderly_care-wizard');
-    //   if (elderlyCareWizard) {
-    //     const parsedWizard = JSON.parse(elderlyCareWizard);
-    //     setValue('patientId', parsedWizard.patientId || '');
-    //     setValue('facility', parsedWizard.facility || '');
-    //     setValue('location', parsedWizard.location || '');
-    //   }
-    // }, [setValue]);
-
   const onSubmit = async (values: Step1Type) => {
     if (values) {
-      // // Save the form data to localStorage
-      // const elderlyCareWizard = {
-      //   patientId: values.patientId,
-      //   facility: values.facility,
-      //   location: values.location,
-      // };
-      // localStorage.setItem('elderly_care-wizard', JSON.stringify(elderlyCareWizard));
       actions.update(values);
       if (p.nextStep) {
         setActiveStep(false);
@@ -131,7 +113,7 @@ const Step1 = (p: Wizard.StepProps) => {
             render={({ onChange, value }) => (
               <QuestionInput
                 type="number"
-                placeholder="Enter your ID"
+                placeholder="参加者IDを入力してください"
                 className="question-input"
                 value={value || ""}
                 onChange={e => onChange(e.target.value)}
@@ -153,10 +135,10 @@ const Step1 = (p: Wizard.StepProps) => {
           <Controller
             control={control}
             name="facility"
-            defaultValue=""
+            defaultValue= "" //{facilityOptions[0].value}
             render={({ onChange, value: valueController }) => (
               <WelcomeSelect
-                placeholder="Select a facility"
+                placeholder="施設を選んでください"
                 options={facilityOptions}
                 onChange={(e: any) => { onChange(e?.value); }}
                 value={facilityOptions.find(option => option.value === valueController)}
@@ -177,13 +159,14 @@ const Step1 = (p: Wizard.StepProps) => {
             録音場所
           </BoldBlackText>
           {/* Recording Location Dropdown */}
-          <Controller
+          <div style={{ position: 'relative', overflow: 'visible' }}>
+          <Controller 
             control={control}
             name="location"
             defaultValue=""
             render={({ onChange, value: valueController }) => (
               <WelcomeSelect
-                placeholder="Select a location"
+                placeholder="録音場所を選んでください"
                 options={locationOptions}
                 onChange={(e: any) => { onChange(e?.value); }}
                 value={locationOptions.find(option => option.value === valueController)}
@@ -192,6 +175,7 @@ const Step1 = (p: Wizard.StepProps) => {
               />
             )}
           />
+          </div>
           {errors.location  && (
                     <TextErrorContainer>
                       <ExclamationSVG />
@@ -218,6 +202,8 @@ const Step1 = (p: Wizard.StepProps) => {
             )
           }
         </WelcomeContent>
+      {/* <FooterInstallAsApp /> */}
+
       </WelcomeStyledForm>
     </>
   );

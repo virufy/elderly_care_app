@@ -6,7 +6,7 @@ const middleComponentPathRecording = 'RecordingsSteps';
 const middleComponentPathQuestionary = 'Questionary';
 const middleComponentPathSubmission = 'Submission';
 const recordYourCoughLogic = 'recordYourCough';
-const recordYourBreathLogic = 'recordYourBreath';
+// const recordYourBreathLogic = 'recordYourBreath';
 const recordYourSpeechLogic = 'recordYourSpeech';
 
 function getCoughSteps(storeKey: string): Wizard.Step[] {
@@ -20,6 +20,7 @@ function getCoughSteps(storeKey: string): Wizard.Step[] {
         nextStep: `${baseUrl}/step-listen/cough`,
         otherSteps: {
           manualUploadStep: `${baseUrl}/step-manual-upload/cough`,
+          skipStep: `${baseUrl}/questionary/step1`,
         },
         metadata: {
           currentLogic: recordYourCoughLogic,
@@ -44,7 +45,7 @@ function getCoughSteps(storeKey: string): Wizard.Step[] {
       props: {
         storeKey,
         previousStep: `${baseUrl}/step-record/cough`,
-        nextStep: `${baseUrl}/step-record/breath`,
+        nextStep: `${baseUrl}/questionary/step1`,
         otherSteps: {
           isShortAudioStep: `${baseUrl}/thank-you`,
         },
@@ -56,50 +57,50 @@ function getCoughSteps(storeKey: string): Wizard.Step[] {
   ];
 }
 
-function getBreathSteps(storeKey: string) {
-  return [
-    {
-      path: '/step-record/breath',
-      componentPath: `${baseComponentPath}/${middleComponentPathRecording}/Introduction`,
-      props: {
-        storeKey,
-        previousStep: `${baseUrl}/step-listen/cough`,
-        nextStep: `${baseUrl}/step-listen/breath`,
-        otherSteps: {
-          manualUploadStep: `${baseUrl}/step-manual-upload/breath`,
-        },
-        metadata: {
-          currentLogic: recordYourBreathLogic,
-        },
-      },
-    },
-    {
-      path: '/step-manual-upload/breath',
-      componentPath: `${baseComponentPath}/${middleComponentPathRecording}/RecordManualUpload`,
-      props: {
-        storeKey,
-        previousStep: `${baseUrl}/step-record/breath`,
-        nextStep: `${baseUrl}/step-listen/breath`,
-        metadata: {
-          currentLogic: recordYourBreathLogic,
-        },
-      },
-    },
-    {
-      path: '/step-listen/breath',
-      componentPath: `${baseComponentPath}/${middleComponentPathRecording}/ListenAudio`,
-      props: {
-        storeKey,
-        previousStep: `${baseUrl}/step-record/breath`,
-        nextStep: `${baseUrl}/questionary/step1`,
-        metadata: {
-          currentLogic: recordYourBreathLogic,
-          // nextSpeech: !allowSpeechIn.includes(country),
-        },
-      },
-    },
-  ];
-}
+// function getBreathSteps(storeKey: string) {
+//   return [
+//     {
+//       path: '/step-record/breath',
+//       componentPath: `${baseComponentPath}/${middleComponentPathRecording}/Introduction`,
+//       props: {
+//         storeKey,
+//         previousStep: `${baseUrl}/step-listen/cough`,
+//         nextStep: `${baseUrl}/step-listen/breath`,
+//         otherSteps: {
+//           manualUploadStep: `${baseUrl}/step-manual-upload/breath`,
+//         },
+//         metadata: {
+//           currentLogic: recordYourBreathLogic,
+//         },
+//       },
+//     },
+//     {
+//       path: '/step-manual-upload/breath',
+//       componentPath: `${baseComponentPath}/${middleComponentPathRecording}/RecordManualUpload`,
+//       props: {
+//         storeKey,
+//         previousStep: `${baseUrl}/step-record/breath`,
+//         nextStep: `${baseUrl}/step-listen/breath`,
+//         metadata: {
+//           currentLogic: recordYourBreathLogic,
+//         },
+//       },
+//     },
+//     {
+//       path: '/step-listen/breath',
+//       componentPath: `${baseComponentPath}/${middleComponentPathRecording}/ListenAudio`,
+//       props: {
+//         storeKey,
+//         previousStep: `${baseUrl}/step-record/breath`,
+//         nextStep: `${baseUrl}/questionary/step1`,
+//         metadata: {
+//           currentLogic: recordYourBreathLogic,
+//           // nextSpeech: !allowSpeechIn.includes(country),
+//         },
+//       },
+//     },
+//   ];
+// }
 
 function getSpeechSteps(storeKey: string) {
   return [
@@ -157,7 +158,7 @@ function getQuestionarySteps(storeKey: string): Wizard.Step[] {
       componentPath: `${baseComponentPath}/${middleComponentPathQuestionary}/Step1`,
       props: {
         storeKey,
-        previousStep: `${baseUrl}/step-listen/breath`,
+        previousStep: `${baseUrl}/step-listen/cough`,
         nextStep: `${baseUrl}/questionary/step2`,
         metadata: {
           current: 1,
@@ -184,7 +185,7 @@ function getQuestionarySteps(storeKey: string): Wizard.Step[] {
       props: {
         storeKey,
         previousStep: `${baseUrl}/questionary/step2`,
-        nextStep: `${baseUrl}/questionary/step4`,
+        nextStep: `${baseUrl}/sending`,
         metadata: {
           current: 3,
           ...baseMetadata,
@@ -258,7 +259,7 @@ export default function stepsDefinition(storeKey: string) {
     // Record Your Cough Steps
     ...getCoughSteps(storeKey),
     // Record Your Breath Steps
-    ...getBreathSteps(storeKey),
+    // ...getBreathSteps(storeKey),
     // Record Your Speech Steps
     ...getSpeechSteps(storeKey),
     // Questionary
@@ -268,7 +269,7 @@ export default function stepsDefinition(storeKey: string) {
       componentPath: `${baseComponentPath}/${middleComponentPathSubmission}/Sending`,
       props: {
         storeKey,
-        previousStep: `${baseUrl}/questionary/step5b`,
+        previousStep: `${baseUrl}/questionary/step3`, 
         nextStep: `${baseUrl}/thank-you`,
       },
     },

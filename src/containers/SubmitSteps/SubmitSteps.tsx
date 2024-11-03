@@ -104,6 +104,7 @@ const WrapperSubmitSteps = () => (
     steps={steps}
   >
     <SubmitSteps />
+    
   </Wizard>
 );
 

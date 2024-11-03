@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
-  OptionListAddOtherButton,
   OptionListCheck, OptionListInput,
   OptionListInputContainer,
   OptionListItem,
@@ -30,80 +29,55 @@ interface OptionListProps {
   isCheckbox?: boolean;
 }
 const defaultValue = { selected: [], other: '' };
+
 const OptionList = ({
   value = defaultValue, items, excludableValues, singleSelection, isCheckbox,
-  onChange, allowAddOther, addOtherLabel, enableOther, otherPlaceholder,
+  onChange, allowAddOther, otherPlaceholder,
 }: OptionListProps) => {
-  const [showOtherInput, setShowOtherInput] = useState(false);
-
-  useEffect(() => {
-    setShowOtherInput(!!enableOther || !!value?.other);
-  }, [value, enableOther]);
 
   const selectItem = (selectedItem: OptionListItemProps) => {
-    const { selected, other } = value;
-    let newSelected: string[];
-    let newOtherValue: string | undefined;
+    const { selected = [] } = value;
+    let newSelected: string[] = [];
 
-    const index = selected.indexOf(selectedItem.value);
+    const index = selected.findIndex(item => item.startsWith(selectedItem.value));
 
     if (index >= 0) {
       newSelected = [...selected.slice(0, index), ...selected.slice(index + 1)];
-      newOtherValue = other;
     } else if (singleSelection) {
       newSelected = [selectedItem.value];
-      newOtherValue = undefined;
     } else if (excludableValues?.includes(selectedItem.value)
-    || (excludableValues && selected.some(item => excludableValues.includes(item)))) {
+      || (excludableValues && selected.some(item => excludableValues.includes(item)))) {
       newSelected = [selectedItem.value];
-      newOtherValue = undefined;
     } else {
       newSelected = [...selected, selectedItem.value];
-      newOtherValue = other;
     }
 
-    if (onChange) {
-      onChange({
-        selected: newSelected,
-        other: newOtherValue,
-      });
-    }
+    onChange?.({
+      selected: newSelected,
+    });
   };
 
-  const otherChangeHandler = (newOtherVaue: string) => {
-    const { selected } = value;
-    let newSelected: string[];
-
-    if (singleSelection || (excludableValues && selected.some(item => excludableValues.includes(item)))) {
-      newSelected = [];
-    } else {
-      newSelected = selected;
+  const otherChangeHandler = (newOtherValue: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    const { selected = [] } = value;
+    const newSelected = selected.filter(item => !item.startsWith('other:'));
+    if (newOtherValue) {
+      newSelected.push(`other: ${newOtherValue}`);
     }
 
-    if (onChange) {
-      onChange({
-        selected: newSelected,
-        other: newOtherVaue,
-      });
-    }
-
-    if (!newOtherVaue) {
-      setShowOtherInput(false);
-    }
-  };
-
-  const addOtherClickHandler = () => {
-    setShowOtherInput(true);
+    onChange?.({
+      selected: newSelected,
+    });
   };
 
   return (
     <>
       {items.map((item, index) => {
-        const isSelected = value?.selected?.includes(item.value);
+        const isSelected = value.selected.some(val => val === item.value || val.startsWith(`${item.value}:`));
         return (
           <OptionListItem
             key={item.value}
-            lastItem={items.length === index + 1 && !allowAddOther && !enableOther}
+            lastItem={items.length === index + 1 && !allowAddOther && item.value === 'other'}
             onClick={() => selectItem(item)}
             isSelected={isSelected}
           >
@@ -111,27 +85,20 @@ const OptionList = ({
               {item.label}
             </OptionListItemLabel>
             <OptionListCheck isSelected={isSelected} checkbox={isCheckbox} />
+            {item.value === 'other' && 
+            <OptionListInputContainer>
+              <OptionListInput
+                placeholder={otherPlaceholder}
+                value={value.selected.find(item => item.startsWith('other:'))?.split(': ')[1] || ''}
+                isSelected={!!value.selected.find(item => item.startsWith('other:'))}
+                onClick={(e) => e.stopPropagation()}
+                onChange={e => otherChangeHandler(e.target.value, e)}
+              />
+          </OptionListInputContainer>}
+
           </OptionListItem>
         );
       })}
-      {allowAddOther && !showOtherInput && (
-      <OptionListAddOtherButton onClick={addOtherClickHandler} lastItem>
-        {addOtherLabel}
-      </OptionListAddOtherButton>
-      )}
-      {showOtherInput && (
-        <OptionListInputContainer>
-          <OptionListInput
-            placeholder={otherPlaceholder}
-            value={value?.other || ''}
-            isSelected={!!(value?.other)}
-            onChange={e => otherChangeHandler(e.target.value)}
-          />
-          {!!(value?.other) && (
-            <OptionListCheck />
-          )}
-        </OptionListInputContainer>
-      )}
     </>
   );
 };

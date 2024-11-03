@@ -130,13 +130,14 @@ const Step1 = ({
             onChange={v => onChange(v.selected[0])}
             items={[
               {
-                value: 'male',
-                label: t('questionary:biologicalSex.options.male'),
-              },
-              {
                 value: 'female',
                 label: t('questionary:biologicalSex.options.female'),
               },
+              {
+                value: 'male',
+                label: t('questionary:biologicalSex.options.male'),
+              },
+
               {
                 value: 'notToSay',
                 label: t('questionary:biologicalSex.options.notToSay'),
@@ -185,7 +186,7 @@ const Step1 = ({
           </TextErrorContainer>
         )}
       />
-      <QuestionNote style={{marginTop:'30px'}}>※ここでお尋ねする質問は、初回のみにさせていただきます。</QuestionNote>
+      {/* <QuestionNote style={{marginTop:'30px'}}>※ここでお尋ねする質問は、初回のみにさせていただきます。</QuestionNote> */}
 
       {activeStep && (
         <Portal>

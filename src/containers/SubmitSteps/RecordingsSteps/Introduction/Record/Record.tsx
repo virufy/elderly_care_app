@@ -45,6 +45,7 @@ interface RecordProps {
   // isCoughLogic: boolean,
   onNext: (values: RecordType) => void;
   onManualUpload: () => void;
+  onSkip: () => void;
   defaultValues: RecordType;
   currentLogic: string;
   action:any;
@@ -54,6 +55,7 @@ interface RecordProps {
 const Record = ({
   onNext,
   onManualUpload,
+  onSkip,
   defaultValues,
   currentLogic,
   action,
@@ -118,12 +120,16 @@ const Record = ({
             leftDisabled={!isValid}
             leftHandler={handleSubmit(onNext)}
           />
+          <WizardButtons
+            invert
+            leftLabel={'スキップ'}
+            leftHandler={onSkip}
+          />
           <UploadContainer onClick={onManualUploadWithFile}>
             <UploadImage src={UploadSVG} />
             <UploadText>{t('recordingsRecord:upload')}</UploadText>
           </UploadContainer>
         </Portal>
-
       </MainContainer>
     </>
   );

@@ -138,8 +138,10 @@ const Step2 = ({
         render={({ onChange, value }) => (
           <OptionList
             isCheckbox
-            value={{ selected: value }}
-            onChange={v => onChange(v.selected)}
+            enableOther={true}
+            otherPlaceholder='回答を入力'
+            value={{ selected: value || [] }}  
+            onChange={(v) => onChange(v.selected || [])}
             items={[
               {
                 value: 'none',
@@ -181,38 +183,38 @@ const Step2 = ({
                 value: 'soreThroat',
                 label: t('questionary:symptoms.options.soreThroat'),
               },
-              {
-                value: 'chestTightness',
-                label: t('questionary:symptoms.options.chestTightness'),
-              },
-              {
-                value: 'palpitations',
-                label: t('questionary:symptoms.options.palpitations'),
-              },
-              {
-                value: 'chestDiscomfort',
-                label: t('questionary:symptoms.options.chestDiscomfort'),
-              },
-              {
-                value: 'vomitingAndDiarrhea',
-                label: t('questionary:symptoms.options.vomitingAndDiarrhea'),
-              },
-              {
-                value: 'weakness',
-                label: t('questionary:symptoms.options.weakness'),
-              },
-              {
-                value: 'fatigue',
-                label: t('questionary:symptoms.options.fatigue'),
-              },
-              {
-                value: 'appetiteLoss',
-                label: t('questionary:symptoms.options.appetiteLoss'),
-              },
-              {
-                value: 'rash',
-                label: t('questionary:symptoms.options.rash'),
-              },
+              // {
+              //   value: 'chestTightness',
+              //   label: t('questionary:symptoms.options.chestTightness'),
+              // },
+              // {
+              //   value: 'palpitations',
+              //   label: t('questionary:symptoms.options.palpitations'),
+              // },
+              // {
+              //   value: 'chestDiscomfort',
+              //   label: t('questionary:symptoms.options.chestDiscomfort'),
+              // },
+              // {
+              //   value: 'vomitingAndDiarrhea',
+              //   label: t('questionary:symptoms.options.vomitingAndDiarrhea'),
+              // },
+              // {
+              //   value: 'weakness',
+              //   label: t('questionary:symptoms.options.weakness'),
+              // },
+              // {
+              //   value: 'fatigue',
+              //   label: t('questionary:symptoms.options.fatigue'),
+              // },
+              // {
+              //   value: 'appetiteLoss',
+              //   label: t('questionary:symptoms.options.appetiteLoss'),
+              // },
+              // {
+              //   value: 'rash',
+              //   label: t('questionary:symptoms.options.rash'),
+              // },
               {
                 value: 'other',
                 label: t('questionary:symptoms.options.other'),

@@ -29,11 +29,9 @@ const ThankYou = (p: Wizard.StepProps) => {
 
   // Function to handle resetting the form
   const handleReset = useCallback(() => {
-    action(resetStore()); // Reset the state in little-state-machine
-    localStorage.clear(); // Clear local storage
-    console.log('Reset State:', state);
-    console.log('LocalStorage after reset:', localStorage);
-  }, [action, state]);
+    action(resetStore());
+    localStorage.clear();
+  }, [action]);
 
   const handleDoBack = useCallback(() => {
     if (p.previousStep) {
@@ -50,21 +48,18 @@ const ThankYou = (p: Wizard.StepProps) => {
     setTitle('');
     setType('tertiary');
     setDoGoBack(null);
-    handleReset();
-
   }, [handleDoBack, setDoGoBack, setTitle, setType, handleReset]);
 
   return (
     <ThankYouLayout>
       <ThankYouTitle>{t('thankyou:title')}</ThankYouTitle>
       <BeforeSubmitText $centered><Trans i18nKey="thankyou:paragraph1" /></BeforeSubmitText>
-      <SubmissionIdBox>
-        <Trans i18nKey="thankyou:paragraph2"> 
+      {state['welcome']?.patientId && <SubmissionIdBox>
+        <Trans i18nKey="thankyou:paragraph2" values={{ submissionId: state['welcome']?.patientId }}> 
           Your unique submission ID:
           <br />
-          <strong>{{ submissionId: Math.floor(100000 + Math.random() * 900000) }}</strong>
         </Trans>
-      </SubmissionIdBox>
+      </SubmissionIdBox>}
 
       <BeforeSubmitText>
         <Trans i18nKey="thankyou:paragraph3">
@@ -77,7 +72,17 @@ const ThankYou = (p: Wizard.StepProps) => {
         </Trans>
       </BeforeSubmitText>
 
-      <CardLink href="https://virufy.org/ja/" target="_self">アプリを閉じる</CardLink> {/* Replace the link and label as necessary */}
+      <CardLink
+        href="https://virufy.org/ja/"
+        target="_self"
+        onClick={(e) => {
+          e.preventDefault();  // Prevents the default link action momentarily
+          handleReset();  // Calls your reset function
+          window.location.href = "https://virufy.org/ja/";  // Redirects to the link after reset
+        }}
+      >
+        アプリを閉じる
+      </CardLink>
 
     </ThankYouLayout>
   );

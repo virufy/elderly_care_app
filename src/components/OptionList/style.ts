@@ -2,13 +2,13 @@ import styled from 'styled-components';
 
 export const OptionListItem = styled.button<{lastItem: boolean; isSelected?: boolean}>`
   width: 100%;
-  height: 50px;
+  height: ${({ lastItem }) => (lastItem ? '80px' : '50px')};
   position: relative;
   font-family: 'Source Sans Pro'; /* It could be removed if default on body changes */
   color: ${props => props.theme.colors.darkBlack};
   font-size: 14px;
   text-align: left;
-  padding: 0 20px;
+  padding: 0 60px 0 20px;
   margin: 3px auto;
   border: none;
   border-radius: 10px;
@@ -67,8 +67,8 @@ export const OptionListCheck = styled.div<{ isSelected?: boolean; checkbox?: boo
 export const OptionListInputContainer = styled.div`
   position: relative;
   display: inline-block;
-  width: calc(100% + 40px);
-  margin: 0 -20px;
+  width: 100%;
+  margin: 0;
 
   @media screen and (${props => props.theme.breakpoints.tablet}){
     max-width: 470px;
@@ -76,19 +76,21 @@ export const OptionListInputContainer = styled.div`
 `;
 
 export const OptionListInput = styled.input<{isSelected: boolean}>`
-  height: 50px; 
+  height: 30px; 
+  font-size: 15px;
   font-family: 'Source Sans Pro'; /* It could be removed if default on body changes */
   color: ${props => props.theme.colors.darkBlack};
   width: 100%;
-  padding: 0 20px;
+  padding: 0px;
   border: none;
-  background-color: ${props => (props.isSelected ? props.theme.colors.green_25 : 'transparent')};
-  border-top: 1px ${props => props.theme.colors.darkBlack_04} solid;
-  border-bottom: 1px ${props => props.theme.colors.darkBlack_04} solid;
+  text-align: left;
+  outline: none;
+  background-color: transparent;
+  border-bottom: 2px #C1C1C1 solid;
   ::placeholder {
-    color: ${props => props.theme.colors.midDarkGray};
+    color: #a7a7a7 ;
   }
   @media screen and (${props => props.theme.breakpoints.tablet}){
-    text-align: center;
+    text-align: left;
   }
 `;

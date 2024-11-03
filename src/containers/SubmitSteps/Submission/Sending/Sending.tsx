@@ -106,8 +106,11 @@ const Sending = (p: Wizard.StepProps) => {
   const mocksendDataToBackend = useCallback(() => {
     console.log('MOCK: sending to backend');
     console.log('State Info:', state);
-    if (p.nextStep)
-      history.push(p.nextStep)
+    setTimeout(() => {
+      if (p.nextStep) {
+        history.push(p.nextStep);
+      }
+    }, 2000);
   }, [state, history, p.nextStep]);
 
   useEffect(() => {
@@ -115,8 +118,8 @@ const Sending = (p: Wizard.StepProps) => {
     setTitle('');
     setType('tertiary');
     setDoGoBack(null);
-    sendDataToBackend();
-    // mocksendDataToBackend();
+    // sendDataToBackend();
+    mocksendDataToBackend();
   }, [handleDoBack, setDoGoBack, setTitle, setType, sendDataToBackend, mocksendDataToBackend]);
 
   return (

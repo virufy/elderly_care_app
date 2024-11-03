@@ -34,7 +34,8 @@ import {
 } from '../style';
 
 const schema = Yup.object({
-  currentMedicalCondition: Yup.object().required('currentMedicalConditionRequired'),
+  currentMedicalCondition: Yup.array().of(Yup.string().required()).required('currentMedicalConditionRequired').default([])
+    .test('SelecteOne', 'Select one', v => !(!!v && v.length > 1 && (v.includes('none')))),
 }).defined();
 
 type Step6Type = Yup.InferType<typeof schema>;
@@ -115,76 +116,54 @@ const Step3 = ({
       <Controller
         control={control}
         name="currentMedicalCondition"
-        defaultValue={{ selected: [], other: '' }}
+        defaultValue={[]}
         render={({ onChange, value }) => (
           <OptionList
             isCheckbox
-            value={value}
-            onChange={v => onChange(v)}
+            enableOther={true}
+            otherPlaceholder='回答を入力'
+            value={{ selected: value || [] }}  
+            onChange={(v) => onChange(v.selected || [])}
             items={[
               {
                 value: 'none',
                 label: t('questionary:medical.options.none'),
               },
               {
-                value: 'asthma',
-                label: t('questionary:medical.options.asthma'),
+                value: 'influenzaA',
+                label: t('questionary:medical.options.influenzaA'),
+              },
+              {
+                value: 'influenzaB',
+                label: t('questionary:medical.options.influenzaB'),
+              },
+              {
+                value: 'covid',
+                label: t('questionary:medical.options.covid'),
+              },
+              {
+                value: 'cold',
+                label: t('questionary:medical.options.cold'),
+              }, 
+              {
+                value: 'pneumonia',
+                label: t('questionary:medical.options.pneumonia'),
               },
               {
                 value: 'bronchitis',
                 label: t('questionary:medical.options.bronchitis'),
               },
               {
-                value: 'copdEmphysema',
-                label: t('questionary:medical.options.emphysema'),
-              },
-              {
-                value: 'otherChronic',
-                label: t('questionary:medical.options.otherChronic'),
-              },
-              {
-                value: 'pneumonia',
-                label: t('questionary:medical.options.pneumonia'),
-              },
-              {
                 value: 'tuberculosis',
                 label: t('questionary:medical.options.tuberculosis'),
               },
               {
-                value: 'cysticFibrosis',
-                label: t('questionary:medical.options.cysticFibrosis'),
+                value: 'copdEmphysema',
+                label: t('questionary:medical.options.emphysema'),
               },
               {
-                value: 'hivAidsOrImpairedImmuneSystem',
-                label: t('questionary:medical.options.hiv'),
-              },
-              {
-                value: 'congestiveHeart',
-                label: t('questionary:medical.options.congestiveHeart'),
-              },
-              {
-                value: 'coughCausedByOther',
-                label: t('questionary:medical.options.cough'),
-              },
-              {
-                value: 'extremeObesity',
-                label: t('questionary:medical.options.obesity'),
-              },
-              {
-                value: 'sinusitis',
-                label: t('questionary:medical.options.sinusitis'),
-              },
-              {
-                value: 'pulmonary',
-                label: t('questionary:medical.options.pulmonary'),
-              },
-              {
-                value: 'heartValveDisease',
-                label: t('questionary:medical.options.heartValveDisease'),
-              },
-              {
-                value: 'pregnancy',
-                label: t('questionary:medical.options.pregnancy'),
+                value: 'asthma',
+                label: t('questionary:medical.options.asthma'),
               },
               {
                 value: 'other',

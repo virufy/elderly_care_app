@@ -45,6 +45,7 @@ const App = () => {
               <AsyncLoad key="SubmitSteps" container="SubmitSteps" />
             </Route>
             <Redirect exact from="/" to={{ pathname: '/elderly_care/welcome', search }} />
+            <Redirect exact from="/" to={{ pathname: '/elderly_care/welcome', search }} />
             <Redirect exact from="/elderly_care" to={{ pathname: '/elderly_care/welcome', search }} />
             <Route>
               <div>404 Page</div>
@@ -52,7 +53,7 @@ const App = () => {
           </Switch>
         </FullWidth>
         <FooterInstallAsApp />
-        {(!pathname.includes('/submit-steps/thank-you')) && (!pathname.includes('/welcome/step-3')) && <FooterReportProblems /> }
+        {(!pathname.includes('/submit-steps/thank-you')) && (!pathname.includes('/welcome/step-3')) && (!pathname.includes('/welcome')) && <FooterReportProblems /> }
       </HeaderContextProvider>
     </AppContainer>
   );

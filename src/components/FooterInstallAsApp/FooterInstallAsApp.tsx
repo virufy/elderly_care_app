@@ -31,7 +31,7 @@ const FooterInstallAsApp = () => {
       }
     }
   }, [handlePrompt, setIsInstalled]);
-  if (location.pathname !== '/elderly_care/welcome/step-3') return null;
+  if (location.pathname !== '/elderly_care/welcome') return null;
 
   return (
     <>

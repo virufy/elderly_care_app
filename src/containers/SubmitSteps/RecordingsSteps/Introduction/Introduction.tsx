@@ -75,6 +75,12 @@ const Introduction = ({
     }
   }, [otherSteps, history, isShortAudioCollection]);
 
+  const handleSkip = React.useCallback(() => {
+    if (otherSteps && otherSteps.skipStep) {
+      history.push(otherSteps.skipStep, { isShortAudioCollection });
+    }
+  }, [otherSteps, history, isShortAudioCollection]);
+  
   const handleNext = React.useCallback(
     values => {
       if (nextStep) {
@@ -190,12 +196,12 @@ const Introduction = ({
         // isCoughLogic={isCoughLogic}
         defaultValues={state?.[storeKey]?.[metadata?.currentLogic]}
         onManualUpload={handleManualUpload}
+        onSkip={handleSkip}
         onNext={handleNext}
         currentLogic={metadata?.currentLogic || ''}
         action={action}
         isShortAudioCollection={isShortAudioCollection}
       />
-
     </MainContainer>
   );
 };

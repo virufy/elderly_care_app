@@ -53,7 +53,7 @@ const usePWAHelpers = (buttonId: string) => {
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
     if (isStandalone) {
       setIsInstalled(true);
-    } else if (window.navigator.getInstalledRelatedApps) {
+    } else if (window.navigator.getInstalledRelatedApps && window === window.top) {
       window.navigator.getInstalledRelatedApps().then(r => {
         if (r) {
           setIsInstalled(r.length > 0);

@@ -171,9 +171,10 @@ export const WelcomeSelect = styled(Select)<{ error?: boolean }>`
       div {
         margin: 0;
       }
-  
+
+
       .custom-select__placeholder {
-        color: ${props => props.theme.colors.mineShaft};
+        color: #A3A3A3;
       }
 
       .custom-select__single-value{
@@ -221,7 +222,7 @@ export const WelcomeSelect = styled(Select)<{ error?: boolean }>`
       .custom-select__menu-list {
         padding-bottom: 0;
         padding-top: 0;
-        max-height: 270px !important;
+        max-height: 180px !important;
         
         .custom-select__option {
           padding-left: 15px;
@@ -304,17 +305,16 @@ export const ArrowRightSVG = styled(ArrowRight)`
 
 export const BoldBlackText = styled.h2`
   font-family: 'Biko';
-  font-size: 14px;
+  font-size: 18px;
   line-height: 20px;
   color: ${({ theme }) => theme.colors.mineShaft}; 
-  text-align: left;
+  text-align: left !important;
   font-weight: 700;
   margin-left: auto;
   margin-right: auto;
   margin-top: 40px;
   margin-bottom: 16px;
   white-space: pre-wrap;
-
   max-width: 100%;
   width: 100%;
   padding-left: 20px;
@@ -397,13 +397,15 @@ export const BulletIndicator = styled.p`
 
 export const HeaderImageContainer = styled.div`
   position: relative;
+  margin-left:auto;
+  margin-right:auto;
   min-width: 375px;
   height: 251px;
   margin-bottom: 30px;
 
 @media screen and (${props => props.theme.breakpoints.tablet}){
-  max-width: 768px;
-  height: 488px;
+  max-width: 600px;
+  height: 338px;
 }
 `;
 
@@ -418,16 +420,15 @@ export const AWSLogo = styled.img`
 `;
 
 export const LogoWhiteBG = styled(LogoSplash)`
-  width: 109px;
-  height: 143px;
-  margin: auto;
+  width: 159px;
+  height: 180px;
   position: absolute;
-  margin-left: -64%;
-  top: 26%;
-
+  top: 16%;
+  left: 50%;
+  transform: translateX(-50%);
   @media screen and (${props => props.theme.breakpoints.tablet}){
     width: 212px;
-    height: 280px;
+    height: 240px;
   }
 `;
 
@@ -758,8 +759,7 @@ export const QuestionInput = styled.input`
   padding: 12px 15px;
 
   height: 48px;
-  width: 100%;
-
+  width: calc(100% - 40px);
   ::placeholder {
     color: #A3A3A3;
     font-size: 14px;
