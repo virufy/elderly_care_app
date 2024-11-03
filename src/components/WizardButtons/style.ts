@@ -1,6 +1,10 @@
 import styled from 'styled-components';
 
-export const WizardButtonsContainer = styled.div`
+interface WizardButtonsContainerProps {
+  skip?: boolean;
+}
+
+export const WizardButtonsContainer = styled.div<WizardButtonsContainerProps>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -10,11 +14,16 @@ export const WizardButtonsContainer = styled.div`
 
   button {
     flex: 1;
-    min-height: 50px;
+    min-height: ${props => (props.skip ? '42px' : '50px')}; // Adjust height based on skip prop
+    width: ${props => (props.skip ? '100px' : '100%')}; // Adjust width if skip is true
     margin-bottom: 8px;
 
-    &:first-of-type {
-      margin-left: 0px !important;
+    // &:first-of-type {
+    //   margin-left: 0px !important;
+    // }
+    
+    &:last-of-type {
+      ${props => props.skip && 'margin-left: auto;'} // Push the "Skip" button to the right
     }
   }
 

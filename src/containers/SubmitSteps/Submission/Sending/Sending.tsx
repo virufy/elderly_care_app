@@ -124,7 +124,7 @@ const Sending = (p: Wizard.StepProps) => {
 
   return (
     <>
-      <h1 style={{ marginTop: '50px' }}>送信中...</h1>
+      <h1 style={{ marginTop: '50px', marginLeft:'auto', marginRight:'auto'}}>送信中...</h1>
       <ImageProcessing />
       {error && (
         <ErrorMessage

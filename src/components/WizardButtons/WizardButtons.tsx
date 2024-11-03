@@ -17,6 +17,7 @@ interface WizardButtonsProps {
   rightLabel?: string;
   rightDisabled?: boolean;
   rightHandler?: () => void;
+  skip?: boolean;
 }
 
 const WizardButtons = React.memo(({
@@ -27,12 +28,14 @@ const WizardButtons = React.memo(({
   rightLabel,
   rightDisabled,
   rightHandler,
+  skip,
 }: WizardButtonsProps) => (
-  <WizardButtonsContainer>
+  <WizardButtonsContainer skip={skip}>
     <Button
       dark={invert}
       disabled={leftDisabled}
       onClick={leftHandler}
+      // style={skip ? { minWidth: '80px', height: '40px' } : {}}
     >
       {leftLabel}
     </Button>

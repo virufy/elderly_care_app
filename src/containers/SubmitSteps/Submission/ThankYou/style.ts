@@ -41,7 +41,7 @@ export const SubmissionIdBox = styled.div`
 
 export const BeforeSubmitText = styled.p<{$centered?: boolean}>`
   font-family: 'Source Sans Pro';
-  font-size: 14px;
+  font-size: 16px;
   line-height: 142.69%;
   margin-bottom: 2px;
   color: ${colors.darkBlack};

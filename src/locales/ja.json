@@ -646,7 +646,7 @@
     },
   "thankyou": {
       "title": "ご協力ありがとうございました",
-      "paragraph1": "あなたの咳の寄付のおかげで私はまた一歩、世界を変える目標へ近づきました。",
+      "paragraph1": "あなたの咳の寄付のおかげで<br/>私はまた一歩、<br/>世界を変える目標へ近づきました。",
       "paragraph1_cough": "あなたの咳の寄付のおかげで Virufyはまた一歩、世界を変える目標へ近づきました。",
       "paragraph1_voice": "あなたの咳の寄付でVirufyは世界を変えるために一歩近づきます。",
       "paragraph2": "あなたの患者ID:<br/><strong>{{submissionId}}</strong>",

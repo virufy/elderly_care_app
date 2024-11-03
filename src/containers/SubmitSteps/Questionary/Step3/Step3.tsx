@@ -34,8 +34,7 @@ import {
 } from '../style';
 
 const schema = Yup.object({
-  currentMedicalCondition: Yup.array().of(Yup.string().required()).required('currentMedicalConditionRequired').default([])
-    .test('SelecteOne', 'Select one', v => !(!!v && v.length > 1 && (v.includes('none')))),
+  currentMedicalCondition: Yup.array().of(Yup.string())
 }).defined();
 
 type Step6Type = Yup.InferType<typeof schema>;

@@ -32,10 +32,8 @@ import { TextErrorContainer } from 'containers/Welcome/style';
 import {
   QuestionText, MainContainer, QuestionNote,
 } from '../style';
-
 const schema = Yup.object({
-  currentSymptoms: Yup.array().of(Yup.string().required()).required('currentSymptomsRequired').default([])
-    .test('SelecteOne', 'Select one', v => !(!!v && v.length > 1 && (v.includes('none')))),
+  currentSymptoms: Yup.array().of(Yup.string())
 }).defined();
 
 type Step5aType = Yup.InferType<typeof schema>;
@@ -183,38 +181,6 @@ const Step2 = ({
                 value: 'soreThroat',
                 label: t('questionary:symptoms.options.soreThroat'),
               },
-              // {
-              //   value: 'chestTightness',
-              //   label: t('questionary:symptoms.options.chestTightness'),
-              // },
-              // {
-              //   value: 'palpitations',
-              //   label: t('questionary:symptoms.options.palpitations'),
-              // },
-              // {
-              //   value: 'chestDiscomfort',
-              //   label: t('questionary:symptoms.options.chestDiscomfort'),
-              // },
-              // {
-              //   value: 'vomitingAndDiarrhea',
-              //   label: t('questionary:symptoms.options.vomitingAndDiarrhea'),
-              // },
-              // {
-              //   value: 'weakness',
-              //   label: t('questionary:symptoms.options.weakness'),
-              // },
-              // {
-              //   value: 'fatigue',
-              //   label: t('questionary:symptoms.options.fatigue'),
-              // },
-              // {
-              //   value: 'appetiteLoss',
-              //   label: t('questionary:symptoms.options.appetiteLoss'),
-              // },
-              // {
-              //   value: 'rash',
-              //   label: t('questionary:symptoms.options.rash'),
-              // },
               {
                 value: 'other',
                 label: t('questionary:symptoms.options.other'),

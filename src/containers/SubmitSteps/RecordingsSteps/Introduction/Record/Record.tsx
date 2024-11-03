@@ -122,6 +122,7 @@ const Record = ({
           />
           <WizardButtons
             invert
+            skip
             leftLabel={'スキップ'}
             leftHandler={onSkip}
           />
