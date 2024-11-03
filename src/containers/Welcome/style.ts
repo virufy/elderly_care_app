@@ -175,6 +175,7 @@ export const WelcomeSelect = styled(Select)<{ error?: boolean }>`
 
       .custom-select__placeholder {
         color: #A3A3A3;
+        font-size: 14px;
       }
 
       .custom-select__single-value{
