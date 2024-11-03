@@ -58,15 +58,13 @@ const Sending = (p: Wizard.StepProps) => {
     
       // Retrieve files from the state (either recorded or uploaded)
       const coughFile = state['submit-steps']?.recordYourCough?.recordingFile || state['submit-steps']?.recordYourCough?.uploadedFile;
-      const breathFile = state['submit-steps']?.recordYourBreath?.recordingFile || state['submit-steps']?.recordYourBreath?.uploadedFile;
+      // const breathFile = state['submit-steps']?.recordYourBreath?.recordingFile || state['submit-steps']?.recordYourBreath?.uploadedFile;
       
-      if ((coughFile instanceof Blob) && (breathFile instanceof Blob)) {
+      if ((coughFile instanceof Blob)) {
         const coughBase64 = await toBase64(coughFile);
-        const breathBase64 = await toBase64(breathFile);
         console.log(JSON.stringify({
           structuredData: structuredData,
           coughFile: coughBase64,
-          breathFile: breathBase64,
         }));
         const response = await fetch(apiUrl, {
           method: 'POST',
@@ -76,7 +74,6 @@ const Sending = (p: Wizard.StepProps) => {
           body: JSON.stringify({
             structuredData: structuredData,
             coughFile: coughBase64,
-            breathFile: breathBase64,
           }),
         });
 
