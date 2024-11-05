@@ -46,7 +46,7 @@ const Sending = (p: Wizard.StepProps) => {
   const sendDataToBackend = useCallback(async (): Promise<void> => {
     try {
       const structuredData: StructuredData = {
-        patientId: state['welcome']?.patientId,
+        patientId: state['submit-steps']?.patientId,
         location: state['welcome']?.location,
         facility: state['welcome']?.facility,
         ageGroup: state['submit-steps']?.ageGroup,
@@ -115,8 +115,8 @@ const Sending = (p: Wizard.StepProps) => {
     setTitle('');
     setType('tertiary');
     setDoGoBack(null);
-    sendDataToBackend();
-    // mocksendDataToBackend();
+    // sendDataToBackend();
+    mocksendDataToBackend();
   }, [handleDoBack, setDoGoBack, setTitle, setType, sendDataToBackend, mocksendDataToBackend]);
 
   return (
