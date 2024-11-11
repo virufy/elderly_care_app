@@ -21,8 +21,6 @@ interface StructuredData {
   ageGroup: string;
   biologicalSex: string;
   currentSymptoms: string[];
-  feverStartDate: string;
-  coughStartDate: string;
 }
 
 const apiUrl = process.env.REACT_APP_API_URL!;
@@ -46,14 +44,12 @@ const Sending = (p: Wizard.StepProps) => {
   const sendDataToBackend = useCallback(async (): Promise<void> => {
     try {
       const structuredData: StructuredData = {
-        patientId: state['submit-steps']?.patientId,
+        patientId: state['welcome']?.patientId,
         location: state['welcome']?.location,
         facility: state['welcome']?.facility,
         ageGroup: state['submit-steps']?.ageGroup,
         biologicalSex: state['submit-steps']?.biologicalSex,
         currentSymptoms: state['submit-steps']?.currentSymptoms,
-        feverStartDate: state['submit-steps']?.feverStartDate,
-        coughStartDate: state['submit-steps']?.coughStartDate,
       };
     
       // Retrieve files from the state (either recorded or uploaded)
