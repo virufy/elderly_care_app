@@ -21,6 +21,7 @@ interface StructuredData {
   ageGroup: string;
   biologicalSex: string;
   currentSymptoms: string[];
+  currentMedicalCondition: string[];
 }
 
 const apiUrl = process.env.REACT_APP_API_URL!;
@@ -50,6 +51,7 @@ const Sending = (p: Wizard.StepProps) => {
         ageGroup: state['submit-steps']?.ageGroup,
         biologicalSex: state['submit-steps']?.biologicalSex,
         currentSymptoms: state['submit-steps']?.currentSymptoms,
+        currentMedicalCondition: state['submit-steps']?.currentMedicalCondition,
       };
     
       // Retrieve files from the state (either recorded or uploaded)
