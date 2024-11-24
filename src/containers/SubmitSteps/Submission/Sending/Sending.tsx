@@ -56,32 +56,26 @@ const Sending = (p: Wizard.StepProps) => {
     
       // Retrieve files from the state (either recorded or uploaded)
       const coughFile = state['submit-steps']?.recordYourCough?.recordingFile || state['submit-steps']?.recordYourCough?.uploadedFile;
-      // const breathFile = state['submit-steps']?.recordYourBreath?.recordingFile || state['submit-steps']?.recordYourBreath?.uploadedFile;
+
+      // Convert to Base64 if a file exists
+      const coughBase64 = coughFile instanceof Blob ? await toBase64(coughFile) : null;
       
-      if ((coughFile instanceof Blob)) {
-        const coughBase64 = await toBase64(coughFile);
-        console.log(JSON.stringify({
+      // Send request to the backend
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
           structuredData: structuredData,
           coughFile: coughBase64,
-        }));
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-          },
-          body: JSON.stringify({
-            structuredData: structuredData,
-            coughFile: coughBase64,
-          }),
-        });
+        }),
+      });
 
-        const result = await response.json();
-        console.log('Response:', result);
-        if (p.nextStep)
-          history.push(p.nextStep)
-      } else {
-        console.error('Files not found.');
-      }
+      const result = await response.json();
+      console.log('Response:', result);
+      if (p.nextStep)
+        history.push(p.nextStep)
     } catch {
       console.error('Error sending data: Failed to send data.');
       setError('Failed to send data.');
