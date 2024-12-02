@@ -90,7 +90,7 @@ const SubmitSteps = () => {
 
     const problemRoute = checkFileConsistencyProblem(state);
     if (problemRoute) {
-      history.push(`/elderly_care/${StoreKey}${problemRoute}`);
+      history.push(`/elderlycare/${StoreKey}${problemRoute}`);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
