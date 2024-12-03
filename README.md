@@ -6,7 +6,7 @@ Translations files are located in `src/locales` folder.
 For each language there is a file with the `json` extension. The name matches the *ISO 639-1* [language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) for the language being translated.
 
 To translate a line of text, open the corresponding language file and search for the text to be replaced. 
-In order to keep these files clean, translation groups are separated by the screen they appear in.
+To keep these files clean, translation groups are separated by the screen they appear in.
 When translating make sure the text is surrounded by double quotes.
 
     "selectCountry":  "Selecciona país",
