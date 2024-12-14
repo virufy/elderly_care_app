@@ -32,9 +32,8 @@ import {
   LogoWhiteBG,
 } from '../style';
 
-
-const facilityList = ['笑楽日', 'その他']
-const locationList = ['居室','個室部屋', '共同部屋','食堂','談話室（レクリエーションルーム）','スタッフルーム','屋外','その他']
+const facilityList = ['福井 笑楽日', 'その他'];
+const locationList = ['居室', '個室部屋', '共同部屋', '食堂', '談話室（レクリエーションルーム）', 'スタッフルーム', '屋外', 'その他'];
 
 const facilityOptions = facilityList.map(facility => ({ label: facility, value: facility }));
 const locationOptions = locationList.map(location => ({ label: location, value: location }));
@@ -49,14 +48,16 @@ type Step1Type = Yup.InferType<typeof schema>;
 
 const Step1 = (p: Wizard.StepProps) => {
   const [activeStep, setActiveStep] = React.useState(true);
-  const { Portal } = usePortal({bindTo: document && document.getElementById('wizard-buttons') as HTMLDivElement,});
-  const {setType, setDoGoBack, setLogoSize} = useHeaderContext();
+  const { Portal } = usePortal({ bindTo: document && document.getElementById('wizard-buttons') as HTMLDivElement });
+  const { setType, setDoGoBack, setLogoSize } = useHeaderContext();
   const resetExecuted = React.useRef(false);
 
   const { state, actions } = useStateMachine({ update: updateAction(p.storeKey), reset: resetStore() });
   const store = state?.[p.storeKey];
 
-  const {control, formState, handleSubmit, reset} = useForm({
+  const {
+    control, formState, handleSubmit, reset,
+  } = useForm({
     defaultValues: store,
     resolver: yupResolver(schema),
     mode: 'onChange',
@@ -115,18 +116,18 @@ const Step1 = (p: Wizard.StepProps) => {
                 type="number"
                 placeholder="参加者IDを入力してください"
                 className="question-input"
-                value={value || ""}
+                value={value || ''}
                 onChange={e => onChange(e.target.value)}
                 autoComplete="off"
               />
             )}
           />
           {errors.patientId && (
-                    <TextErrorContainer>
-                      <ExclamationSVG />
-                      {errors.patientId.message}
-                    </TextErrorContainer>
-                  )}
+            <TextErrorContainer>
+              <ExclamationSVG />
+              {errors.patientId.message}
+            </TextErrorContainer>
+          )}
 
           <BoldBlackText>
             施設
@@ -135,7 +136,7 @@ const Step1 = (p: Wizard.StepProps) => {
           <Controller
             control={control}
             name="facility"
-            defaultValue= "" //{facilityOptions[0].value}
+            defaultValue="" // {facilityOptions[0].value}
             render={({ onChange, value: valueController }) => (
               <WelcomeSelect
                 placeholder="施設を選んでください"
@@ -147,41 +148,40 @@ const Step1 = (p: Wizard.StepProps) => {
               />
             )}
           />
-          {errors.facility  && (
-                    <TextErrorContainer>
-                      <ExclamationSVG />
-                      {errors.facility.message}
-                    </TextErrorContainer>
-                  )}
+          {errors.facility && (
+            <TextErrorContainer>
+              <ExclamationSVG />
+              {errors.facility.message}
+            </TextErrorContainer>
+          )}
 
-          
           <BoldBlackText>
             録音場所
           </BoldBlackText>
           {/* Recording Location Dropdown */}
           <div style={{ position: 'relative', overflow: 'visible' }}>
-          <Controller 
-            control={control}
-            name="location"
-            defaultValue=""
-            render={({ onChange, value: valueController }) => (
-              <WelcomeSelect
-                placeholder="録音場所を選んでください"
-                options={locationOptions}
-                onChange={(e: any) => { onChange(e?.value); }}
-                value={locationOptions.find(option => option.value === valueController)}
-                className="custom-select"
-                classNamePrefix="custom-select"
-              />
-            )}
-          />
+            <Controller
+              control={control}
+              name="location"
+              defaultValue=""
+              render={({ onChange, value: valueController }) => (
+                <WelcomeSelect
+                  placeholder="録音場所を選んでください"
+                  options={locationOptions}
+                  onChange={(e: any) => { onChange(e?.value); }}
+                  value={locationOptions.find(option => option.value === valueController)}
+                  className="custom-select"
+                  classNamePrefix="custom-select"
+                />
+              )}
+            />
           </div>
-          {errors.location  && (
-                    <TextErrorContainer>
-                      <ExclamationSVG />
-                      {errors.location.message}
-                    </TextErrorContainer>
-                  )}
+          {errors.location && (
+            <TextErrorContainer>
+              <ExclamationSVG />
+              {errors.location.message}
+            </TextErrorContainer>
+          )}
 
           <BoldBlackText>安全性を確保するために、次のことをお勧めします</BoldBlackText>
           <WelcomeItemList>
@@ -194,7 +194,7 @@ const Step1 = (p: Wizard.StepProps) => {
               <Portal>
                 <WizardButtons
                   invert
-                  leftLabel='次へ'
+                  leftLabel="次へ"
                   leftHandler={handleSubmit(onSubmit)}
                   leftDisabled={!isValid}
                 />
@@ -202,7 +202,7 @@ const Step1 = (p: Wizard.StepProps) => {
             )
           }
         </WelcomeContent>
-      {/* <FooterInstallAsApp /> */}
+        {/* <FooterInstallAsApp /> */}
 
       </WelcomeStyledForm>
     </>
