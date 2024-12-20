@@ -33,15 +33,12 @@ import {
 } from '../style';
 
 const facilityList = ['福井 笑楽日', 'その他'];
-const locationList = ['居室', '個室部屋', '共同部屋', '食堂', '談話室（レクリエーションルーム）', 'スタッフルーム', '屋外', 'その他'];
 
 const facilityOptions = facilityList.map(facility => ({ label: facility, value: facility }));
-const locationOptions = locationList.map(location => ({ label: location, value: location }));
 
 const schema = Yup.object().shape({
   patientId: Yup.number().typeError('Patient ID must be a number').required('Patient ID is required'),
   facility: Yup.string().required('Facility is required'),
-  location: Yup.string().required('Location is required'),
 }).defined();
 
 type Step1Type = Yup.InferType<typeof schema>;
@@ -152,34 +149,6 @@ const Step1 = (p: Wizard.StepProps) => {
             <TextErrorContainer>
               <ExclamationSVG />
               {errors.facility.message}
-            </TextErrorContainer>
-          )}
-
-          <BoldBlackText>
-            録音場所
-          </BoldBlackText>
-          {/* Recording Location Dropdown */}
-          <div style={{ position: 'relative', overflow: 'visible' }}>
-            <Controller
-              control={control}
-              name="location"
-              defaultValue=""
-              render={({ onChange, value: valueController }) => (
-                <WelcomeSelect
-                  placeholder="録音場所を選んでください"
-                  options={locationOptions}
-                  onChange={(e: any) => { onChange(e?.value); }}
-                  value={locationOptions.find(option => option.value === valueController)}
-                  className="custom-select"
-                  classNamePrefix="custom-select"
-                />
-              )}
-            />
-          </div>
-          {errors.location && (
-            <TextErrorContainer>
-              <ExclamationSVG />
-              {errors.location.message}
             </TextErrorContainer>
           )}
 
