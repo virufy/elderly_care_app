@@ -12,7 +12,7 @@ const recordYourSpeechLogic = 'recordYourSpeech';
 function getCoughSteps(storeKey: string): Wizard.Step[] {
   return [
     {
-      path: '/step-record/cough', 
+      path: '/step-record/cough',
       componentPath: `${baseComponentPath}/${middleComponentPathRecording}/Introduction`,
       props: {
         storeKey,
@@ -216,7 +216,7 @@ export function getWelcomeStepsWithoutDots(storeKey: string): Wizard.Step[] {
       componentPath: 'Welcome/Step1',
       props: {
         storeKey,
-        nextStep: `${baseUrl}/step-record/cough`, 
+        nextStep: `${baseUrl}/step-record/cough`,
       },
     },
     {
@@ -269,7 +269,7 @@ export default function stepsDefinition(storeKey: string) {
       componentPath: `${baseComponentPath}/${middleComponentPathSubmission}/Sending`,
       props: {
         storeKey,
-        previousStep: `${baseUrl}/questionary/step3`, 
+        previousStep: `${baseUrl}/questionary/step3`,
         nextStep: `${baseUrl}/thank-you`,
       },
     },
@@ -279,7 +279,7 @@ export default function stepsDefinition(storeKey: string) {
       props: {
         storeKey,
         previousStep: `${welcomeUrl}`,
-        nextStep: '/welcome',
+        nextStep: `${baseUrl}/step-record/cough`,
       },
     },
   ];

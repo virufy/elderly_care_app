@@ -1,5 +1,5 @@
 export const reportProblemForm = {
-  ja: 'https://docs.google.com/forms/d/e/1FAIpQLSfXBWlusanI0ngx12rmUuobvEsosYP9QjyPsYFiG3gAxskBAg/viewform',
+  ja: 'https://forms.gle/q7p98qV5EBPM3s6M6',
 };
 
 declare global {
