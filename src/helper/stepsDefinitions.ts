@@ -1,5 +1,5 @@
-const baseUrl = '/elderly_care/submit-steps';
-const welcomeUrl = '/elderly_care/welcome';
+const baseUrl = '/elderlycare/submit-steps';
+const welcomeUrl = '/elderlycare/welcome';
 
 const baseComponentPath = 'SubmitSteps';
 const middleComponentPathRecording = 'RecordingsSteps';
@@ -248,7 +248,7 @@ export function welcomeStepsDefinitions(storeKey: string): Wizard.Step[] {
       props: {
         storeKey,
         previousStep: `${baseUrl}/questionary/step6`,
-        nextStep: '/elderly_care/submit-steps/step-record/cough',
+        nextStep: '/elderlycare/submit-steps/step-record/cough',
       },
     },
   ];

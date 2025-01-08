@@ -38,14 +38,14 @@ const App = () => {
         <Header />
         <FullWidth style={{ flex: 1 }}>
           <Switch>
-            <Route path="/elderly_care/welcome">
+            <Route path="/elderlycare/welcome">
               <AsyncLoad key="Welcome" container="Welcome" />
             </Route>
-            <Route path="/elderly_care/submit-steps">
+            <Route path="/elderlycare/submit-steps">
               <AsyncLoad key="SubmitSteps" container="SubmitSteps" />
             </Route>
-            <Redirect exact from="/" to={{ pathname: '/elderly_care/welcome', search }} />
-            <Redirect exact from="/elderly_care" to={{ pathname: '/elderly_care/welcome', search }} />
+            <Redirect exact from="/" to={{ pathname: '/elderlycare/welcome', search }} />
+            <Redirect exact from="/elderlycare" to={{ pathname: '/elderlycare/welcome', search }} />
             <Route>
               <div>404 Page</div>
             </Route>
