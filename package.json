@@ -1,7 +1,7 @@
 {
   "name": "elderly_care_app",
   "version": "0.0.5",
-  "homepage": "http://virufy.github.io/elderlycare",
+  "homepage": "http://virufy.github.io",
   "private": true,
   "dependencies": {
     "@hookform/error-message": "0.0.4",
