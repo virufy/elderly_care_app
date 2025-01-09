@@ -32,7 +32,7 @@ import {
   LogoWhiteBG,
 } from '../style';
 
-const facilityList = ['福井 笑楽日', 'その他'];
+const facilityList = ['福岡 さんすまいる唐原', '福岡 藤の実会', '福井 笑楽日', 'その他'];
 
 const facilityOptions = facilityList.map(facility => ({ label: facility, value: facility }));
 
