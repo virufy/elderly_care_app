@@ -39,6 +39,7 @@ const facilityOptions = facilityList.map(facility => ({ label: facility, value: 
 const schema = Yup.object().shape({
   patientId: Yup.number().typeError('Patient ID must be a number').required('Patient ID is required'),
   facility: Yup.string().required('Facility is required'),
+  location: Yup.string().default(''),
 }).defined();
 
 type Step1Type = Yup.InferType<typeof schema>;
