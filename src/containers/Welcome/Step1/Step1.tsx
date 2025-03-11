@@ -65,6 +65,16 @@ const Step1 = (p: Wizard.StepProps) => {
   const { isValid, errors } = formState;
 
   useEffect(() => {
+    actions.reset({
+      [p.storeKey]: {
+        patientId: '',
+        facility: '',
+        location: '',
+      },
+    });
+  }, []);
+
+  useEffect(() => {
     if (resetExecuted.current) {
       resetExecuted.current = false;
       reset(store);
