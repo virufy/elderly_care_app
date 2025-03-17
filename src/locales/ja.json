@@ -547,7 +547,7 @@
       },
       "symptoms": {
           "title": "現在の症状",
-          "question": "<strong>現在の診断名を選択してください</strong>",
+          "question": "<strong>現在の症状を選択してください</strong>",
           "options": {
               "none": "なし",
               "bodyAches": "体の痛み",
