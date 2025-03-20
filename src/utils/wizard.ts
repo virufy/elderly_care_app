@@ -10,16 +10,16 @@ export function updateAction(storeKey: string): any {
 }
 
 export function resetStore(): any {
-  return (state: any) => ({ welcome: { language: state.welcome.language }, 
+  return (state: any) => ({
+    welcome: { language: state.welcome.language },
     'submit-steps': {
-      ageGroup: "",
-      biologicalSex: "",
+      ageGroup: '',
+      biologicalSex: '',
       currentMedicalCondition: [],
       currentSymptoms: [],
       recordYourBreath: { recordingFile: null, uploadedFile: null },
       recordYourCough: { recordingFile: null, uploadedFile: null },
-      symptomsStartedDate: ""
-    }
+      symptomsStartedDate: '',
+    },
   });
-  
 }
