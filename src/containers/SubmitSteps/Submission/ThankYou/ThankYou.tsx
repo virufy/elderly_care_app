@@ -32,7 +32,7 @@ const ThankYou = (p: Wizard.StepProps) => {
   const history = useHistory();
   const { Portal } = usePortal({ bindTo: document && document.getElementById('wizard-buttons') as HTMLDivElement });
   const { handleSubmit } = useForm({ mode: 'onChange' });
-
+  // const { previousStep, nextStep } = p;
   const schema = Yup.object().shape({}).defined();
   type ThankYouType = Yup.InferType<typeof schema>;
 
@@ -62,7 +62,7 @@ const ThankYou = (p: Wizard.StepProps) => {
     } else {
       history.goBack();
     }
-  }, []);
+  }, [p.previousStep, history]);
 
   useEffect(() => {
     scrollToTop();
