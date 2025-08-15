@@ -32,7 +32,7 @@ import {
   LogoWhiteBG,
 } from '../style';
 
-const facilityList = ['福岡 さんすまいる唐原', '福岡 藤の実会', '福井 笑楽日', '福岡 市役所', 'その他'];
+const facilityList = ['Fukuoka Sun Smile Tohara', 'Fukuoka Fujinomi Association', 'Fukui Laugh Day', 'Fukuoka City Hall', 'others'];
 
 const facilityOptions = facilityList.map(facility => ({ label: facility, value: facility }));
 
@@ -72,7 +72,7 @@ const Step1 = (p: Wizard.StepProps) => {
         location: '',
       },
     });
-  }, []);
+  }, [actions, p.storeKey]);
 
   useEffect(() => {
     if (resetExecuted.current) {
@@ -112,7 +112,7 @@ const Step1 = (p: Wizard.StepProps) => {
         <WelcomeContent mt={4}>
 
           <BoldBlackText>
-            参加者ID
+            Participant ID
           </BoldBlackText>
           {/* Patient ID */}
           <Controller
@@ -122,7 +122,7 @@ const Step1 = (p: Wizard.StepProps) => {
             render={({ onChange, value }) => (
               <QuestionInput
                 type="number"
-                placeholder="参加者IDを入力してください"
+                placeholder="Please enter your participant ID"
                 className="question-input"
                 value={value || ''}
                 onChange={e => onChange(e.target.value)}
@@ -138,7 +138,7 @@ const Step1 = (p: Wizard.StepProps) => {
           )}
 
           <BoldBlackText>
-            施設
+            Facility
           </BoldBlackText>
           {/* Facility Dropdown */}
           <Controller
@@ -147,7 +147,7 @@ const Step1 = (p: Wizard.StepProps) => {
             defaultValue="" // {facilityOptions[0].value}
             render={({ onChange, value: valueController }) => (
               <WelcomeSelect
-                placeholder="施設を選んでください"
+                placeholder="Please select a facility"
                 options={facilityOptions}
                 onChange={(e: any) => { onChange(e?.value); }}
                 value={facilityOptions.find(option => option.value === valueController)}
@@ -163,10 +163,18 @@ const Step1 = (p: Wizard.StepProps) => {
             </TextErrorContainer>
           )}
 
-          <BoldBlackText>安全性を確保するために、次のことをお勧めします</BoldBlackText>
+          <BoldBlackText>To ensure your safety, we recommend the following:</BoldBlackText>
           <WelcomeItemList>
-            <WelcomeItemListItem>咳のリスクを高める基礎疾患をお持ちの方は、参加する前に医療従事者に確認してください。</WelcomeItemListItem>
-            <WelcomeItemListItem>症状が悪化していると感じた場合は、お近くの医療機関にご相談ください。</WelcomeItemListItem>
+            <WelcomeItemListItem>If you have any underlying medical conditions
+              that increase your risk of coughing,
+              check with your healthcare provider before participating.
+            </WelcomeItemListItem>
+            <WelcomeItemListItem>If you feel that your symptoms are getting worse,
+              please consult your local medical institution.
+            </WelcomeItemListItem>
+            <WelcomeItemListItem>Please confirm that you agree to participate
+              in the demonstration experiment.
+            </WelcomeItemListItem>
           </WelcomeItemList>
 
           {
@@ -174,7 +182,7 @@ const Step1 = (p: Wizard.StepProps) => {
               <Portal>
                 <WizardButtons
                   invert
-                  leftLabel="次へ"
+                  leftLabel="Next"
                   leftHandler={handleSubmit(onSubmit)}
                   leftDisabled={!isValid}
                 />
