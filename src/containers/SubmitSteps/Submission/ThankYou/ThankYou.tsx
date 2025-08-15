@@ -32,7 +32,6 @@ const ThankYou = (p: Wizard.StepProps) => {
   const history = useHistory();
   const { Portal } = usePortal({ bindTo: document && document.getElementById('wizard-buttons') as HTMLDivElement });
   const { handleSubmit } = useForm({ mode: 'onChange' });
-  // const { previousStep, nextStep } = p;
   const schema = Yup.object().shape({}).defined();
   type ThankYouType = Yup.InferType<typeof schema>;
 
@@ -62,7 +61,9 @@ const ThankYou = (p: Wizard.StepProps) => {
     } else {
       history.goBack();
     }
-  }, [p.previousStep, history]);
+    // do one-time init here
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     scrollToTop();
@@ -98,12 +99,12 @@ const ThankYou = (p: Wizard.StepProps) => {
       <Portal>
         <WizardButtons
           invert
-          leftLabel="もう一回録音"
+          leftLabel="Record Again"
           leftHandler={handleSubmit(values => onSubmit(values, 'nextStep'))}
         />
         <WizardButtons
           invert
-          leftLabel="ホーム画面に戻る"
+          leftLabel="Return to home screen"
           leftHandler={handleSubmit(values => onSubmit(values, 'previousStep'))}
         />
       </Portal>

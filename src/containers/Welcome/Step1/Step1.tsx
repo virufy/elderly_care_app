@@ -72,7 +72,9 @@ const Step1 = (p: Wizard.StepProps) => {
         location: '',
       },
     });
-  }, [actions, p.storeKey]);
+    // do one-time init here
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (resetExecuted.current) {
