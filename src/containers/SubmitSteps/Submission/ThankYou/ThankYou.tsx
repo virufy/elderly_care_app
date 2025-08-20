@@ -99,12 +99,12 @@ const ThankYou = (p: Wizard.StepProps) => {
       <Portal>
         <WizardButtons
           invert
-          leftLabel="Record Again"
+          leftLabel="Back to the app home"
           leftHandler={handleSubmit(values => onSubmit(values, 'nextStep'))}
         />
         <WizardButtons
           invert
-          leftLabel="Return to home screen"
+          leftLabel="Close App"
           leftHandler={handleSubmit(values => onSubmit(values, 'previousStep'))}
         />
       </Portal>

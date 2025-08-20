@@ -15,7 +15,7 @@ export const WizardButtonsContainer = styled.div<WizardButtonsContainerProps>`
   button {
     flex: 1;
     min-height: ${props => (props.skip ? '42px' : '50px')}; // Adjust height based on skip prop
-    width: ${props => (props.skip ? '100px' : '100%')}; // Adjust width if skip is true
+    width: ${props => (props.skip ? '100%' : '100%')}; // Adjust width if skip is true
     margin-bottom: 8px;
 
     // &:first-of-type {
