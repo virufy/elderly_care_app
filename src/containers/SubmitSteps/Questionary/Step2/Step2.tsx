@@ -32,8 +32,9 @@ import { TextErrorContainer } from 'containers/Welcome/style';
 import {
   QuestionText, MainContainer, QuestionNote,
 } from '../style';
+
 const schema = Yup.object({
-  currentSymptoms: Yup.array().of(Yup.string())
+  currentSymptoms: Yup.array().of(Yup.string()),
 }).defined();
 
 type Step5aType = Yup.InferType<typeof schema>;
@@ -136,10 +137,10 @@ const Step2 = ({
         render={({ onChange, value }) => (
           <OptionList
             isCheckbox
-            enableOther={true}
-            otherPlaceholder='回答を入力'
-            value={{ selected: value || [] }}  
-            onChange={(v) => onChange(v.selected || [])}
+            enableOther
+            otherPlaceholder="Fill in"
+            value={{ selected: value || [] }}
+            onChange={v => onChange(v.selected || [])}
             items={[
               {
                 value: 'none',

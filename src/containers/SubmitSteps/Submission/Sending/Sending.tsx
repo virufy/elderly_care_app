@@ -12,7 +12,7 @@ import { scrollToTop } from 'helper/scrollHelper';
 // Hooks
 import useHeaderContext from 'hooks/useHeaderContext';
 
-import { ImageProcessing, TextErrorContainer} from '../style';
+import { ImageProcessing, TextErrorContainer } from '../style';
 
 interface StructuredData {
   patientId: string;
@@ -27,15 +27,14 @@ interface StructuredData {
 const apiUrl = process.env.REACT_APP_API_URL!;
 
 // Helper function to convert file to Base64
-const toBase64 = (file: Blob): Promise<string> => 
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve((reader.result as string).split(',')[1]);  // Get the Base64 part only
-    reader.onerror = (error) => reject(error);
+const toBase64 = (file: Blob): Promise<string> => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => resolve((reader.result as string).split(',')[1]); // Get the Base64 part only
+  reader.onerror = error => reject(error);
 });
 
-const Sending = (p: Wizard.StepProps) => { 
+const Sending = (p: Wizard.StepProps) => {
   const [, setActiveStep] = useState(true);
   const { setDoGoBack, setTitle, setType } = useHeaderContext();
   const { state } = useStateMachine();
@@ -45,21 +44,21 @@ const Sending = (p: Wizard.StepProps) => {
   const sendDataToBackend = useCallback(async (): Promise<void> => {
     try {
       const structuredData: StructuredData = {
-        patientId: state['welcome']?.patientId,
-        location: state['welcome']?.location,
-        facility: state['welcome']?.facility,
+        patientId: state.welcome?.patientId,
+        location: state.welcome?.location,
+        facility: state.welcome?.facility,
         ageGroup: state['submit-steps']?.ageGroup,
         biologicalSex: state['submit-steps']?.biologicalSex,
         currentSymptoms: state['submit-steps']?.currentSymptoms,
         currentMedicalCondition: state['submit-steps']?.currentMedicalCondition,
       };
-    
+
       // Retrieve files from the state (either recorded or uploaded)
       const coughFile = state['submit-steps']?.recordYourCough?.recordingFile || state['submit-steps']?.recordYourCough?.uploadedFile;
 
       // Convert to Base64 if a file exists
       const coughBase64 = coughFile instanceof Blob ? await toBase64(coughFile) : null;
-      
+
       // Send request to the backend
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -67,15 +66,14 @@ const Sending = (p: Wizard.StepProps) => {
           'content-type': 'application/json',
         },
         body: JSON.stringify({
-          structuredData: structuredData,
+          structuredData,
           coughFile: coughBase64,
         }),
       });
 
       const result = await response.json();
       console.log('Response:', result);
-      if (p.nextStep)
-        history.push(p.nextStep)
+      if (p.nextStep) history.push(p.nextStep);
     } catch {
       console.error('Error sending data: Failed to send data.');
       setError('Failed to send data.');
@@ -107,13 +105,13 @@ const Sending = (p: Wizard.StepProps) => {
     setTitle('');
     setType('tertiary');
     setDoGoBack(null);
-    sendDataToBackend(); 
+    sendDataToBackend();
     // mocksendDataToBackend();
   }, [handleDoBack, setDoGoBack, setTitle, setType, sendDataToBackend, mocksendDataToBackend]);
 
   return (
     <>
-      <h1 style={{ marginTop: '50px', marginLeft:'auto', marginRight:'auto'}}>送信中...</h1>
+      <h1 style={{ marginTop: '50px', marginLeft: 'auto', marginRight: 'auto' }}>Sending...</h1>
       <ImageProcessing />
       {error && (
         <ErrorMessage

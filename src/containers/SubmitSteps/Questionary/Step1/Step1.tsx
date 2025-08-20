@@ -91,7 +91,7 @@ const Step1 = ({
 
   useEffect(() => {
     scrollToTop();
-    setTitle('属性');
+    setTitle('Information');
     setSubtitle(t(''));
     setType('primary');
     setDoGoBack(() => handleDoBack);
@@ -139,8 +139,8 @@ const Step1 = ({
               },
 
               {
-                value: 'notToSay',
-                label: t('questionary:biologicalSex.options.notToSay'),
+                value: 'other',
+                label: t('questionary:biologicalSex.options.other'),
               },
             ]}
           />
@@ -170,7 +170,7 @@ const Step1 = ({
             value={value}
             onChange={onChange}
             type="number"
-            placeholder='年齢を入力してください'
+            placeholder="Please enter your age"
             autoComplete="Off"
           />
         )}

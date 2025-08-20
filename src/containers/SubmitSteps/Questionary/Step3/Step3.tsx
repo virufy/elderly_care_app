@@ -34,7 +34,7 @@ import {
 } from '../style';
 
 const schema = Yup.object({
-  currentMedicalCondition: Yup.array().of(Yup.string())
+  currentMedicalCondition: Yup.array().of(Yup.string()),
 }).defined();
 
 type Step6Type = Yup.InferType<typeof schema>;
@@ -82,9 +82,9 @@ const Step3 = ({
   useEffect(() => {
     scrollToTop();
     setTitle(`${t('questionary:respiration.title')}`);
-    setType('primaryBlue');
+    setType('primary');
     setDoGoBack(() => handleDoBack);
-    setSubtitle(t('questionary:respiration:subtitle'));
+    setSubtitle('');
   }, [handleDoBack, setDoGoBack, setSubtitle, setTitle, setType, metadata, t]);
 
   // Handlers
@@ -105,7 +105,7 @@ const Step3 = ({
         totalSteps={metadata?.total}
         progressBar
       />
-      <QuestionText extraSpace first >
+      <QuestionText extraSpace first>
         <Trans i18nKey="questionary:medical.question">
           <strong>Which of the below medical conditions do you currently have?</strong>
         </Trans>
@@ -119,10 +119,10 @@ const Step3 = ({
         render={({ onChange, value }) => (
           <OptionList
             isCheckbox
-            enableOther={true}
-            otherPlaceholder='回答を入力'
-            value={{ selected: value || [] }}  
-            onChange={(v) => onChange(v.selected || [])}
+            enableOther
+            otherPlaceholder="Fill in"
+            value={{ selected: value || [] }}
+            onChange={v => onChange(v.selected || [])}
             items={[
               {
                 value: 'none',
@@ -143,7 +143,7 @@ const Step3 = ({
               {
                 value: 'cold',
                 label: t('questionary:medical.options.cold'),
-              }, 
+              },
               {
                 value: 'pneumonia',
                 label: t('questionary:medical.options.pneumonia'),

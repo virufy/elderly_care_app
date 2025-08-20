@@ -120,12 +120,14 @@ const Record = ({
             leftDisabled={!isValid}
             leftHandler={handleSubmit(onNext)}
           />
-          <WizardButtons
-            invert
-            skip
-            leftLabel={'スキップ'}
-            leftHandler={onSkip}
-          />
+          <div style={{ minWidth: '100%' }}>
+            <WizardButtons
+              invert
+              skip
+              leftLabel="Skip"
+              leftHandler={onSkip}
+            />
+          </div>
           <UploadContainer onClick={onManualUploadWithFile}>
             <UploadImage src={UploadSVG} />
             <UploadText>{t('recordingsRecord:upload')}</UploadText>

@@ -80,7 +80,7 @@ const Introduction = ({
       history.push(otherSteps.skipStep, { isShortAudioCollection });
     }
   }, [otherSteps, history, isShortAudioCollection]);
-  
+
   const handleNext = React.useCallback(
     values => {
       if (nextStep) {
@@ -115,15 +115,18 @@ const Introduction = ({
     if (isCoughLogic) {
       return ([
         <Trans i18nKey="recordingsIntroduction:recordCough.intro2Cough">
-          Hold your device <strong>1-2 ft (30-60 cm)</strong>
-          away from your mouth and <strong>do not obstruct</strong>
-          or cover your device with plastic. Do not cough violently or too forcefully.
+          Hold your phone 8-16 inches away from your
+          mouth and wait for the recording to begin.
+          Produce three clear coughs into the microphone.
+          Avoid making sudden loud sounds.
         </Trans>,
         <ImageCoughSVG />,
         <Trans i18nKey="recordingsRecord:textCough">
-          Tap the record button and <strong>cough intentionally</strong>
-          into the bottom of your phone <strong>3 times</strong> with a
-          <strong> deep breath</strong> between each cough. When you are done, tap the stop button.
+          Press the Record button and cough
+          lightly toward the screen of your phone.
+          If you feel discomfort while coughing,
+          stop and take a break before continuing.
+          Press Stop when you are done.
         </Trans>,
       ]);
     }
@@ -166,9 +169,9 @@ const Introduction = ({
         </WelcomeBullets>
         <BlackText>
           <Trans i18nKey="recordingsIntroduction:recordCough.intro1">
-            Find a <strong>quiet environment</strong> at least
-            <strong>20 ft (6m)</strong> away from others and wear a cloth or surgical mask.
-            If you are feeling ill, please sit down.
+            Find a quiet space away from others and any noise.
+            Remove your mask if necessary.
+            If you feel unwell, proceed calmly.
           </Trans>
         </BlackText>
       </InstructionContainer>
