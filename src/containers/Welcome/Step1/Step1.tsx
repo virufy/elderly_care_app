@@ -32,7 +32,7 @@ import {
   LogoWhiteBG,
 } from '../style';
 
-const facilityList = ['マナハウス', 'フレンドピーチ千早', 'いとう内科クリニック', 'ビハーラ今泉', '福岡 さんすまいる唐原', '福岡 藤の実会', '福井 笑楽日', '福岡 市役所', 'その他'];
+const facilityList = ['福岡 マナハウス', '福岡 フレンドピーチ千早', '福岡 いとう内科クリニック', '福岡 ビハーラ今泉', '福岡 さんすまいる唐原', '福岡 藤の実会', '福井 笑楽日', '福岡 市役所', 'その他'];
 
 const facilityOptions = facilityList.map(facility => ({ label: facility, value: facility }));
 
