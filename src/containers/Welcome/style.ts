@@ -770,3 +770,42 @@ export const QuestionInput = styled.input`
     max-width: 470px;
     }
 `;
+
+// date picker CSS
+
+export const FormGroup = styled.div`
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const FormLabel = styled.label`
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+`;
+
+export const DatePickerWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+export const DateInput = styled.input`
+  width: 100%;
+  padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+
+  &:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 1px #2563eb;
+  }
+`;
+
+export const ErrorText = styled.p`
+  margin-top: 0.25rem;
+  color: #dc2626;
+  font-size: 0.75rem;
+`;

@@ -100,6 +100,7 @@ const Record = ({
         <MicContainer>
           <Controller
             control={control}
+            defaultValue={null}
             name="recordingFile"
             render={({ onChange }) => (
               <MicRecorder
