@@ -40,7 +40,11 @@ const Introduction = ({
   storeKey,
 }: Wizard.StepProps) => {
   const isCoughLogic = React.useMemo(
-    () => (metadata ? metadata.currentLogic === 'recordYourCough' : false),
+    () => (metadata
+      ? metadata.currentLogic === 'recordCough1'
+      || metadata.currentLogic === 'recordCough2'
+      || metadata.currentLogic === 'recordCough3'
+      : false),
     [metadata],
   );
 
@@ -101,6 +105,7 @@ const Introduction = ({
     scrollToTop();
     if (isCoughLogic) {
       setTitle(t('recordingsIntroduction:recordCough.header'));
+      console.log(state);
     } else if (isBreathLogic) {
       setTitle(t('recordingsIntroduction:recordBreath.header'));
     } else {

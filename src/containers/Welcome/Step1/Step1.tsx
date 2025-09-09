@@ -23,6 +23,7 @@ import { scrollToTop } from 'helper/scrollHelper';
 
 // Styles
 import WizardButtons from 'components/WizardButtons';
+import i18n from 'i18n';
 import {
   WelcomeContent, WelcomeStyledForm, QuestionInput,
   WelcomeItemListItem, WelcomeItemList,
@@ -40,6 +41,8 @@ const schema = Yup.object().shape({
   patientId: Yup.number().typeError('Patient ID must be a number').required('Patient ID is required'),
   facility: Yup.string().required('Facility is required'),
   location: Yup.string().default(''),
+  language: Yup.string().default(i18n.language),
+
 }).defined();
 
 type Step1Type = Yup.InferType<typeof schema>;
@@ -92,6 +95,9 @@ const Step1 = (p: Wizard.StepProps) => {
       }
     }
   };
+
+  // console.log(actions);
+  console.log(state);
 
   useEffect(() => {
     scrollToTop();

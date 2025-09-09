@@ -5,11 +5,11 @@ const baseComponentPath = 'SubmitSteps';
 const middleComponentPathRecording = 'RecordingsSteps';
 const middleComponentPathQuestionary = 'Questionary';
 const middleComponentPathSubmission = 'Submission';
-const recordYourCoughLogic = 'recordYourCough';
+// const recordYourCoughLogic = 'recordYourCough';
 // const recordYourBreathLogic = 'recordYourBreath';
 const recordYourSpeechLogic = 'recordYourSpeech';
 
-function getCoughSteps(storeKey: string): Wizard.Step[] {
+/* function getCoughSteps(storeKey: string): Wizard.Step[] {
   return [
     {
       path: '/step-record/cough',
@@ -51,6 +51,137 @@ function getCoughSteps(storeKey: string): Wizard.Step[] {
         },
         metadata: {
           currentLogic: recordYourCoughLogic,
+        },
+      },
+    },
+  ];
+} */
+
+function getCoughSteps(storeKey: string): Wizard.Step[] {
+  return [
+    // Step 1 - Cough 1
+    {
+      path: '/step-record/cough1',
+      componentPath: `${baseComponentPath}/${middleComponentPathRecording}/Introduction`,
+      props: {
+        storeKey,
+        previousStep: `${welcomeUrl}`,
+        nextStep: `${baseUrl}/step-listen/cough1`,
+        otherSteps: {
+          manualUploadStep: `${baseUrl}/step-manual-upload/cough1`,
+          skipStep: `${baseUrl}/step-listen/cough1`,
+        },
+        metadata: {
+          currentLogic: 'recordCough1',
+        },
+      },
+    },
+    {
+      path: '/step-manual-upload/cough1',
+      componentPath: `${baseComponentPath}/${middleComponentPathRecording}/RecordManualUpload`,
+      props: {
+        storeKey,
+        previousStep: `${baseUrl}/step-record/cough1`,
+        nextStep: `${baseUrl}/step-listen/cough2`,
+        metadata: {
+          currentLogic: 'recordCough1',
+        },
+      },
+    },
+
+    {
+      path: '/step-listen/cough1',
+      componentPath: `${baseComponentPath}/${middleComponentPathRecording}/ListenAudio`,
+      props: {
+        storeKey,
+        previousStep: `${baseUrl}/step-record/cough1`,
+        nextStep: `${baseUrl}/step-record/cough2`,
+        metadata: {
+          currentLogic: 'recordCough1',
+        },
+      },
+    },
+
+    // Step 2 - Cough 2
+    {
+      path: '/step-record/cough2',
+      componentPath: `${baseComponentPath}/${middleComponentPathRecording}/Introduction`,
+      props: {
+        storeKey,
+        previousStep: `${baseUrl}/step-record/cough1`,
+        nextStep: `${baseUrl}/step-listen/cough2`,
+        otherSteps: {
+          manualUploadStep: `${baseUrl}/step-manual-upload/cough2`,
+          skipStep: `${baseUrl}/step-listen/cough2`,
+        },
+        metadata: {
+          currentLogic: 'recordCough2',
+        },
+      },
+    },
+    {
+      path: '/step-manual-upload/cough2',
+      componentPath: `${baseComponentPath}/${middleComponentPathRecording}/RecordManualUpload`,
+      props: {
+        storeKey,
+        previousStep: `${baseUrl}/step-record/cough2`,
+        nextStep: `${baseUrl}/step-listen/cough2`,
+        metadata: {
+          currentLogic: 'recordCough2',
+        },
+      },
+    },
+    {
+      path: '/step-listen/cough2',
+      componentPath: `${baseComponentPath}/${middleComponentPathRecording}/ListenAudio`,
+      props: {
+        storeKey,
+        previousStep: `${baseUrl}/step-record/cough2`,
+        nextStep: `${baseUrl}/step-record/cough3`,
+        metadata: {
+          currentLogic: 'recordCough2',
+        },
+      },
+    },
+
+    // Step 3 - Cough 3
+    {
+      path: '/step-record/cough3',
+      componentPath: `${baseComponentPath}/${middleComponentPathRecording}/Introduction`,
+      props: {
+        storeKey,
+        previousStep: `${baseUrl}/step-record/cough2`,
+        nextStep: `${baseUrl}/step-listen/cough3`,
+        otherSteps: {
+          manualUploadStep: `${baseUrl}/step-manual-upload/cough3`,
+          skipStep: `${baseUrl}/step-listen/cough3`,
+        },
+        metadata: {
+          currentLogic: 'recordCough3',
+        },
+      },
+    },
+    {
+      path: '/step-manual-upload/cough3',
+      componentPath: `${baseComponentPath}/${middleComponentPathRecording}/RecordManualUpload`,
+      props: {
+        storeKey,
+        previousStep: `${baseUrl}/step-record/cough3`,
+        nextStep: `${baseUrl}/step-listen/cough3`,
+        metadata: {
+          currentLogic: 'recordCough3',
+        },
+      },
+    },
+    {
+      path: '/step-listen/cough3',
+      componentPath: `${baseComponentPath}/${middleComponentPathRecording}/ListenAudio`,
+      props: {
+        storeKey,
+        previousStep: `${baseUrl}/step-record/cough3`,
+        nextStep: `${baseUrl}/questionary/step1`, // 👈 after last cough go to form/questionary
+        metadata: {
+          currentLogic: 'recordCough3',
         },
       },
     },
@@ -216,7 +347,8 @@ export function getWelcomeStepsWithoutDots(storeKey: string): Wizard.Step[] {
       componentPath: 'Welcome/Step1',
       props: {
         storeKey,
-        nextStep: `${baseUrl}/step-record/cough`,
+        nextStep: `${welcomeUrl}/step-4`,
+        // nextStep: `${baseUrl}/step-record/cough`,
       },
     },
     {
@@ -238,8 +370,9 @@ export function welcomeStepsDefinitions(storeKey: string): Wizard.Step[] {
       componentPath: 'Welcome/Step4',
       props: {
         storeKey,
-        previousStep: `${welcomeUrl}/step-3`,
-        nextStep: `${baseUrl}/questionary/step1`,
+        previousStep: `${welcomeUrl}`,
+        // nextStep: `${baseUrl}/questionary/step1`,
+        nextStep: `${baseUrl}/step-record/cough1`,
       },
     },
     {

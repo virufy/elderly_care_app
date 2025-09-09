@@ -8,7 +8,7 @@ export const StyledReactDatePickerContainer = styled.div`
   }
 `;
 
-export const DatePickerContainer = styled.button`
+export const DatePickerContainer = styled.div`
   background-color: ${props => props.theme.colors.lightGray};
   border-radius: 4px;
   border: none;

@@ -52,7 +52,5 @@ i18n
       escapeValue: false,
     },
   });
-console.log('Current Language: ', i18n.language);
-console.log('bundles en/main:', i18n.getResourceBundle('en', 'main'));
-// console.log('bundles ja/main:', i18n.getResourceBundle('ja', 'main'));
+
 export default i18n;

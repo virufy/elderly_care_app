@@ -25,41 +25,38 @@ interface DatePickerProps {
 interface DatePickerInputProps {
   label: string;
   value?: Date | null | undefined;
-  onClick?: ((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void) | undefined
+  onClick?: ((event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void) | undefined
 }
 
 const DatePickerInput = React.forwardRef((
   { label, value, onClick }: DatePickerInputProps,
-  ref: ((instance: HTMLButtonElement | null) => void) | React.RefObject<HTMLButtonElement> | null | undefined,
+  ref: React.Ref<HTMLDivElement>,
 ) => (
-  <DatePickerContainer ref={ref} onClick={onClick}>
+  // Use a div instead of a button to prevent form submission
+  <DatePickerContainer ref={ref} onClick={onClick} role="button">
     <img alt="calendar" src={calendarSvg} />
     <LabelValueContainer>
       <Label>{label}</Label>
-      <Value>{value}</Value>
+      <Value>{value ? value.toString() : ''}</Value>
     </LabelValueContainer>
-    <img alt="calendar" src={chevronSvg} />
+    <img alt="chevron" src={chevronSvg} />
   </DatePickerContainer>
 ));
 
-DatePickerInput.defaultProps = {
-  value: undefined,
-  onClick: undefined,
-};
+DatePickerInput.displayName = 'DatePickerInput';
 
 const DatePicker = ({
   label, value, locale, onChange,
 }: DatePickerProps) => {
-  // Memos
   const today = React.useMemo(() => endOfDay(new Date()), []);
 
   return (
     <StyledReactDatePickerContainer>
       <ReactDatePicker
         selected={value}
-        customInput={<DatePickerInput label={label} />}
+        customInput={<DatePickerInput label={label} value={value} />}
         onChange={onChange}
-        dateFormat="EEE, MMM d, Y"
+        dateFormat="EEE, MMM d, yyyy"
         locale={locale}
         maxDate={today}
       />

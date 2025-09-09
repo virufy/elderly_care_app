@@ -13,7 +13,7 @@ import * as Yup from 'yup';
 
 // Components
 import WizardButtons from 'components/WizardButtons';
-import Link from 'components/Link';
+// import Link from 'components/Link';
 import Checkbox from 'components/Checkbox';
 import { BlackText } from 'components/Texts';
 
@@ -30,9 +30,10 @@ import useEmbeddedFile from 'hooks/useEmbeddedFile';
 import { buildConsentFilePath } from 'helper/consentPathHelper';
 import { scrollToTop } from 'helper/scrollHelper';
 import { currentCountry } from 'utils/currentCountry';
+import DatePicker from 'components/DatePicker';
 
 // Data
-import { consentPdf } from 'data/consentPdf';
+// import { consentPdf } from 'data/consentPdf';
 
 // Styles
 import {
@@ -45,8 +46,14 @@ import {
 } from '../style';
 
 const schema = Yup.object().shape({
-  agreedConsentTerms: Yup.boolean().required().default(false).oneOf([true]),
+  agreedAgeConsentTerms: Yup.boolean().required().default(false).oneOf([true]),
   agreedPolicyTerms: Yup.boolean().required().default(false).oneOf([true]),
+  agreedConsentTerms: Yup.boolean().required().default(false).oneOf([true]),
+  agreedAIConsentTerms: Yup.boolean().required().default(false).oneOf([true]),
+  agreedPrivacyTerms: Yup.boolean().required().default(false).oneOf([true]),
+  dateOfConsent: Yup.date().nullable().required(),
+  // participantId: Yup.string().required('Participant ID is required'),
+
 });
 
 type Step3Type = Yup.InferType<typeof schema>;
@@ -88,6 +95,8 @@ const Step4 = (p: Wizard.StepProps) => {
     }
   };
 
+  console.log(state);
+
   const doBack = useCallback(() => {
     if (p.previousStep) {
       setActiveStep(false);
@@ -113,10 +122,12 @@ const Step4 = (p: Wizard.StepProps) => {
         <InnerContainerShapeDown>
           <BlackText>
             <Trans i18nKey="consent:paragraph1">
-              Virufy cares about your privacy and is advised by licensed data privacy experts.
-              The information and recordings you provide will only be used for the purposes described in our
-              Privacy Policy and consent form.
-              Please read the consent Form:
+              Virufy cares about your privacy and is advised
+              by licensed data privacy experts.
+              The information and recordings you provide will
+              only be used for the purposes described
+              in our <strong>privacy policy</strong> and consent form.
+              Please read the consent form:
             </Trans>
           </BlackText>
         </InnerContainerShapeDown>
@@ -126,11 +137,13 @@ const Step4 = (p: Wizard.StepProps) => {
 
         <BlackText>
           <Trans i18nKey="consent:paragraph3">
-            By checking the below boxes, you are granting your explicit, freely given, and informed consent to Virufy to
-            collect, process, and share your information for the purposes indicated above and as provided in greater
-            detail in our Privacy Policy. You can print
-            a copy of this Consent Form for your personal records by
-            accessing <Link to={consentPdf[currentCountry]} target="_blank">Consent Form</Link>
+            By checking the below boxes, you acknowledge
+            that you have read and understood the Virufy
+            privacy policy, and that you are providing your
+            explicit consent to Virufy’s collection and
+            processing of the categories of biometric and
+            health information enumerated below.
+            {/* <Link to={consentPdf[currentCountry]} target="_blank">Consent Form</Link> */}
           </Trans>
         </BlackText>
 
@@ -140,17 +153,18 @@ const Step4 = (p: Wizard.StepProps) => {
 
         <Controller
           control={control}
-          name="agreedConsentTerms"
+          name="agreedAgeConsentTerms"
           defaultValue={false}
           render={({ onChange, value }) => (
             <Checkbox
-              id="Step2-ConsentTerms"
+              id="Step2-AgeConsentTerms"
               label={(
                 <Trans i18nKey="consent:certify">
-                  I certify that I am at least 18 years old and agree to the terms of this Consent Form.
+                  I certify that I am at least 18 years old
+                  and agree to the terms of the Consent Form.
                 </Trans>
               )}
-              name="agreedConsentTerms"
+              name="agreedAgeConsentTerms"
               onChange={e => onChange(e.target.checked)}
               value={value}
             />
@@ -166,13 +180,97 @@ const Step4 = (p: Wizard.StepProps) => {
               id="Step2-PolicyTerms"
               label={(
                 <Trans i18nKey="consent:agree">
-                  I have read, understood, and agree to the terms of the Virufy Privacy Policy.
+                  I agree to the terms of the Virufy Privacy Policy.
                 </Trans>
               )}
               name="agreedPolicyTerms"
               onChange={e => onChange(e.target.checked)}
               value={value}
             />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="agreedConsentTerms"
+          defaultValue={false}
+          render={({ onChange, value }) => (
+            <Checkbox
+              id="Step2-ConsentTerms"
+              label={(
+                <Trans i18nKey="consent:agreeConsent">
+                  I hereby acknowledge and agree that processing
+                  shall be done for the purposes indicated above and,
+                  in particular but without limitation, for research
+                  and compiling a dataset needed for the development
+                  of artificial intelligence algorithms for device-based
+                  COPD detection.
+                </Trans>
+              )}
+              name="agreedConsentTerms"
+              onChange={e => onChange(e.target.checked)}
+              value={value}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="agreedAIConsentTerms"
+          defaultValue={false}
+          render={({ onChange, value }) => (
+            <Checkbox
+              id="Step2-AIConsentTerms"
+              label={(
+                <Trans i18nKey="consent:agreeAIConsent">
+                  I hereby acknowledge and agree that processing
+                  shall be done for the purposes indicated above and,
+                  in particular but without limitation, for training
+                  artificial intelligence algorithms to analyze cough
+                  audio recordings to better determine signs of COPD
+                </Trans>
+              )}
+              name="agreedAIConsentTerms"
+              onChange={e => onChange(e.target.checked)}
+              value={value}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="agreedPrivacyTerms"
+          defaultValue={false}
+          render={({ onChange, value }) => (
+            <Checkbox
+              id="Step2-PrivacyTerms"
+              label={(
+                <Trans i18nKey="consent:agreePrivacy">
+                  I hereby expressly consent to the collection
+                  and processing of my personal information,
+                  biometric information, and health information.
+                </Trans>
+              )}
+              name="agreedPrivacyTerms"
+              onChange={e => onChange(e.target.checked)}
+              value={value}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="dateOfConsent"
+          defaultValue={null}
+          render={({ onChange, value }) => (
+            <div className="form-group">
+              <DatePicker
+                label="Date of Consent"
+                value={value}
+                locale="en"
+                onChange={date => onChange(date as Date)}
+              />
+            </div>
           )}
         />
 
