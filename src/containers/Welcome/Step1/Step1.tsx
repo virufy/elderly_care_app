@@ -96,9 +96,6 @@ const Step1 = (p: Wizard.StepProps) => {
     }
   };
 
-  // console.log(actions);
-  console.log(state);
-
   useEffect(() => {
     scrollToTop();
     // Hide back arrow in header if neccesary

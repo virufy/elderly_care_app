@@ -51,6 +51,10 @@ i18n
     interpolation: {
       escapeValue: false,
     },
+    react: {
+      transSupportBasicHtmlNodes: true, // ✅ allow <link>, <strong>, etc.
+      transKeepBasicHtmlNodesFor: ['br', 'strong'], // optional: keep these as real DOM nodes
+    },
   });
 
 export default i18n;

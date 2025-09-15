@@ -1,5 +1,5 @@
 export const languageData = [
-  // { value: 'en', label: 'English' },
+  { value: 'en', label: 'English' },
   // { value: 'es', label: 'Español' },
   // { value: 'pt', label: 'Português' },
   // { value: 'fr', label: 'Français' },

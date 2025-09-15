@@ -33,7 +33,7 @@ import { currentCountry } from 'utils/currentCountry';
 import DatePicker from 'components/DatePicker';
 
 // Data
-// import { consentPdf } from 'data/consentPdf';
+import { consentPdf } from 'data/consentPdf';
 
 // Styles
 import {
@@ -43,6 +43,7 @@ import {
   WelcomeStyledFormAlternative,
   WelcomeConsentForm,
   CheckboxTitle,
+  BoldBlackText,
 } from '../style';
 
 const schema = Yup.object().shape({
@@ -95,8 +96,6 @@ const Step4 = (p: Wizard.StepProps) => {
     }
   };
 
-  console.log(state);
-
   const doBack = useCallback(() => {
     if (p.previousStep) {
       setActiveStep(false);
@@ -121,15 +120,22 @@ const Step4 = (p: Wizard.StepProps) => {
       <ContainerShapeDown isMobile={isMobile}>
         <InnerContainerShapeDown>
           <BlackText>
-            <Trans i18nKey="consent:paragraph1">
-              Virufy cares about your privacy and is advised
-              by licensed data privacy experts.
-              The information and recordings you provide will
-              only be used for the purposes described
-              in our <strong>privacy policy</strong> and consent form.
-              Please read the consent form:
+            <Trans i18nKey="consent:paragraph01">
+              Virufy cares about your privacy and
+              is advised by licensed data privacy experts.
+              The information and recordings you provide
+              will only be used for the purposes described
+              in our
+            </Trans>
+            <a href={consentPdf[currentCountry]} target="_blank" rel="noopener noreferrer">
+              Privacy Policy
+            </a>
+            <Trans i18nKey="consent:paragraph02">
+              and Consent Form.
+              Please read the Consent Form:
             </Trans>
           </BlackText>
+
         </InnerContainerShapeDown>
       </ContainerShapeDown>
       <WelcomeContent>
@@ -143,9 +149,9 @@ const Step4 = (p: Wizard.StepProps) => {
             explicit consent to Virufy’s collection and
             processing of the categories of biometric and
             health information enumerated below.
-            {/* <Link to={consentPdf[currentCountry]} target="_blank">Consent Form</Link> */}
           </Trans>
         </BlackText>
+        {/* <Link to={consentPdf[currentCountry]} target="_blank">Consent Form</Link> */}
 
         <CheckboxTitle>
           {t('consent:pleaseConfirm', 'Please confirm the following:')}
@@ -179,9 +185,15 @@ const Step4 = (p: Wizard.StepProps) => {
             <Checkbox
               id="Step2-PolicyTerms"
               label={(
-                <Trans i18nKey="consent:agree">
-                  I agree to the terms of the Virufy Privacy Policy.
-                </Trans>
+                <>
+                  <Trans i18nKey="consent:agree">
+                    I agree to the terms of the Virufy
+                  </Trans>
+                  <a href={consentPdf[currentCountry]} target="_blank" rel="noopener noreferrer">
+                    Privacy Policy.
+                  </a>
+                </>
+
               )}
               name="agreedPolicyTerms"
               onChange={e => onChange(e.target.checked)}
@@ -258,19 +270,34 @@ const Step4 = (p: Wizard.StepProps) => {
           )}
         />
 
-        <Controller
+        {/* <Controller
           control={control}
           name="dateOfConsent"
           defaultValue={null}
           render={({ onChange, value }) => (
-            <div className="form-group">
-              <DatePicker
-                label="Date of Consent"
-                value={value}
-                locale="en"
-                onChange={date => onChange(date as Date)}
-              />
-            </div>
+            <DatePicker
+              label="Date of Consent"
+              value={value}
+              locale="en"
+              onChange={date => onChange(date as Date)}
+            />
+          )}
+        /> */}
+
+        <BoldBlackText>
+          Date of Consent
+        </BoldBlackText>
+        {/* Facility Dropdown */}
+        <Controller
+          control={control}
+          name="dateOfConsent"
+          defaultValue=""
+          render={({ onChange, value }) => (
+            <DatePicker
+              value={value}
+              locale="en"
+              onChange={date => onChange(date as Date)}
+            />
           )}
         />
 

@@ -4,7 +4,7 @@ import React, { FunctionComponent } from 'react';
 import { StyledInternalLink, StyledExternalLink } from './style';
 
 interface LinkProps {
-  children: React.ReactNode
+  children?: React.ReactNode
   to: string;
   target?: '_blank' | '_self';
   isBold?: boolean;

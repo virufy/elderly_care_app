@@ -85,16 +85,12 @@ const Introduction = ({
     }
   }, [otherSteps, history, isShortAudioCollection]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleNext = React.useCallback(
     values => {
       if (nextStep) {
-        action({
-          [metadata?.currentLogic]: {
-            recordingFile: values.recordingFile,
-            uploadedFile: null,
-          },
-        });
         history.push(nextStep, { from: 'step-record', isShortAudioCollection });
+        console.log(values);
       }
     },
     [nextStep, action, metadata, history, isShortAudioCollection],
@@ -104,7 +100,13 @@ const Introduction = ({
   useEffect(() => {
     scrollToTop();
     if (isCoughLogic) {
-      setTitle(t('recordingsIntroduction:recordCough.header'));
+      if (metadata?.currentLogic === 'recordCough1') {
+        setTitle('Record first cough');
+      } else if (metadata?.currentLogic === 'recordCough2') {
+        setTitle('Record second cough');
+      } else if (metadata?.currentLogic === 'recordCough3') {
+        setTitle('Record third cough');
+      }
       console.log(state);
     } else if (isBreathLogic) {
       setTitle(t('recordingsIntroduction:recordBreath.header'));
