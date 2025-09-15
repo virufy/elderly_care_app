@@ -578,7 +578,7 @@ export const countryData: CountryDataProps[] = [
     label: 'United republic of tanzania', value: 'United republic of tanzania', telephonePrefix: '', states: states.Tanzania, defaultLang: [{ value: 'en', label: 'English' }], supportedLang: languageData,
   },
   {
-    label: 'United States', value: 'United States', telephonePrefix: '+51', states: states.UnitedStates, defaultLang: [{ value: 'en', label: 'English' }], supportedLang: languageData,
+    label: 'United States', value: 'UnitedStates', telephonePrefix: '+51', states: states.UnitedStates, defaultLang: [{ value: 'en', label: 'English' }], supportedLang: languageData,
   },
   {
     label: 'Uruguay', value: 'Uruguay', telephonePrefix: '', states: states.Uruguay, defaultLang: [{ value: 'es', label: 'Español' }], supportedLang: languageData,

@@ -48,9 +48,16 @@ interface RecordProps {
   onSkip: () => void;
   defaultValues: RecordType;
   currentLogic: string;
-  action:any;
+  action: any;
   isShortAudioCollection?: boolean;
 }
+
+const toBase64 = (file: Blob): Promise<string> => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => resolve(reader.result as string);
+  reader.onerror = error => reject(error);
+});
 
 const Record = ({
   onNext,
@@ -84,14 +91,34 @@ const Record = ({
   // Refs
   const micKey = React.useRef<number>(1);
 
-  const onManualUploadWithFile = () => {
+  const onManualUploadWithFile = async () => {
+    const file = getValues('recordingFile') as File | null;
+    const base64 = file ? await toBase64(file) : null;
+
     action({
       [currentLogic]: {
-        recordingFile: getValues('recordingFile') || null,
+        recordingFile: base64,
         uploadedFile: null,
       },
     });
     onManualUpload?.();
+  };
+
+  const handleNext = async (values: RecordType) => {
+    const file = values.recordingFile as File | null;
+    const base64 = file ? await toBase64(file) : null;
+
+    action({
+      [currentLogic]: {
+        recordingFile: base64,
+        uploadedFile: null,
+      },
+    });
+
+    onNext({
+      ...values,
+      recordingFile: base64 as any,
+    });
   };
 
   return (
@@ -119,7 +146,7 @@ const Record = ({
             invert
             leftLabel={t('recordingsRecord:next')}
             leftDisabled={!isValid}
-            leftHandler={handleSubmit(onNext)}
+            leftHandler={handleSubmit(handleNext)}
           />
           <div style={{ minWidth: '100%' }}>
             <WizardButtons

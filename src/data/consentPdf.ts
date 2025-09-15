@@ -7,7 +7,7 @@ export const consentPdf = {
   Peru: 'https://drive.google.com/file/d/1nb9CbF4l6RF2IJQbzWY9YDnomQWMixbT/view',
   Mexico: 'https://drive.google.com/file/d/16_0GEMA5uApVuf9K9YlYD7ukPAS2_8wn/view',
   Japan: 'https://drive.google.com/file/d/11RTMmnHW4SqHNf7htr3xuSi-o2v2vWlp/view',
-  'United States': 'https://drive.google.com/file/d/166Fu8RKluJdkRaxPDfWPyCpM7BUIzmnE/view',
+  UnitedStates: 'https://drive.google.com/file/d/166Fu8RKluJdkRaxPDfWPyCpM7BUIzmnE/view',
   Global: 'https://drive.google.com/file/d/1hnxvDJ5qHBnUi7cnkNdyD4PuWMz8Ntss/view',
 };
 

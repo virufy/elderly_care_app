@@ -501,6 +501,12 @@ export const WelcomeConsentForm = styled.div`
   margin: 10px auto 20px auto;
   padding-left: 20px;
   padding-right: 20px;
+  border: 1px solid #ccc;     /* gives it the box border */
+  background-color: #f9f9f9;  /* light background for readability */
+  max-height: 300px;          /* fixed height */
+  overflow-y: auto;           /* enable vertical scroll */
+  padding: 20px !important; 
+  border-radius: 4px;   
 
   .WordSection1 > p,
   .Section1 > p {

@@ -23,6 +23,7 @@ createStore({
 
 const stepsWithoutDots = getWelcomeStepsWithoutDots(StoreKey);
 const currentSteps = welcomeStepsDefinitions(StoreKey);
+console.log(StoreKey);
 
 const allSteps = [...stepsWithoutDots, ...currentSteps];
 
