@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation, Trans } from 'react-i18next';
 
@@ -49,7 +49,11 @@ const Introduction = ({
   );
 
   const isBreathLogic = React.useMemo(
-    () => (metadata ? metadata.currentLogic === 'recordYourBreath' : false),
+    () => (metadata
+      ? metadata.currentLogic === 'recordLung1'
+      || metadata.currentLogic === 'recordLung2'
+      || metadata.currentLogic === 'recordLung3'
+      : false),
     [metadata],
   );
 
@@ -61,6 +65,7 @@ const Introduction = ({
   const history = useHistory();
   const location = useLocation<{ isShortAudioCollection: boolean }>();
   const { t } = useTranslation();
+  const [currentStep, setCurrentStep] = useState('first');
 
   const isShortAudioCollection = location?.state?.isShortAudioCollection || false;
 
@@ -90,6 +95,7 @@ const Introduction = ({
     values => {
       if (nextStep) {
         history.push(nextStep, { from: 'step-record', isShortAudioCollection });
+        console.log(state);
         console.log(values);
       }
     },
@@ -101,22 +107,36 @@ const Introduction = ({
     scrollToTop();
     if (isCoughLogic) {
       if (metadata?.currentLogic === 'recordCough1') {
-        setTitle('Record first cough');
+        setTitle('Record First Cough');
+        setCurrentStep('first');
       } else if (metadata?.currentLogic === 'recordCough2') {
-        setTitle('Record second cough');
+        setTitle('Record Second Cough');
+        setCurrentStep('second');
       } else if (metadata?.currentLogic === 'recordCough3') {
-        setTitle('Record third cough');
+        setTitle('Record Third Cough');
+        setCurrentStep('third');
       }
-      console.log(state);
+      console.log(currentStep);
+      console.log(metadata);
     } else if (isBreathLogic) {
-      setTitle(t('recordingsIntroduction:recordBreath.header'));
+      if (metadata?.currentLogic === 'recordLung1') {
+        setTitle('Record First Breath');
+        setCurrentStep('first');
+      } else if (metadata?.currentLogic === 'recordLung2') {
+        setTitle('Record Second Breath');
+        setCurrentStep('second');
+      } else if (metadata?.currentLogic === 'recordLung3') {
+        setTitle('Record Third Breath');
+        setCurrentStep('third');
+      }
     } else {
       setTitle(t('recordingsIntroduction:recordSpeech.header'));
     }
+    console.log(state);
     setType('primary');
     setSubtitle(t('recordingsIntroduction:recordCough:title'));
     setDoGoBack(() => handleDoBack);
-  }, [isCoughLogic, isBreathLogic, setTitle, setSubtitle, setType, handleDoBack, setDoGoBack, t]);
+  }, [isCoughLogic, isBreathLogic, setTitle, setSubtitle, setType, handleDoBack, setDoGoBack, t, currentStep]);
 
   const [renderInstrucion2, renderImage2, renderInstrucion3] = React.useMemo(() => {
     if (isCoughLogic) {
@@ -175,11 +195,9 @@ const Introduction = ({
           <BulletIndicator>1</BulletIndicator>
         </WelcomeBullets>
         <BlackText>
-          <Trans i18nKey="recordingsIntroduction:recordCough.intro1">
-            Find a quiet space away from others and any noise.
-            Remove your mask if necessary.
-            If you feel unwell, proceed calmly.
-          </Trans>
+          <Trans i18nKey="recordingsIntroduction:recordCough.intro01" />
+          {currentStep}
+          <Trans i18nKey="recordingsIntroduction:recordCough.intro02" />
         </BlackText>
       </InstructionContainer>
       <SocialDistancing />
