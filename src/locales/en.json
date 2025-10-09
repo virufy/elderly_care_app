@@ -38,6 +38,7 @@
     "accessCode": "Access code",
     "enterAccessCode": "Please enter your access code",
     "ageGroupRequired": "Please enter your age",
+    "yearOfBirthrequired": "Please enter your year of birth",
     "biologicalSexRequired": "Please select an option",
     "vaccineRequired": "Please select an option",
     "smokeLastSixMonthsRequired": "Please select an option",
@@ -333,7 +334,7 @@
     "agreeConsent": "I hereby acknowledge and agree that processing shall be done for the purposes indicated above and, in particular but without limitation, for research and compiling a dataset needed for the development of artificial intelligence algorithms for device-based COPD detection.",
     "agreeAIConsent": "I hereby acknowledge and agree that processing shall be done for the purposes indicated above and, in particular but without limitation, for training artificial intelligence algorithms to analyze cough audio recordings to better determine signs of COPD.",
     "agreePrivacy": "I hereby expressly consent to the collection and processing of my personal information, biometric information, and health information.",
-    "dateOfConsent" : "Date of Consent"
+    "dateOfConsent": "Date of Consent"
   },
   "beforeStart": {
     "title": "Before you begin...",
@@ -350,8 +351,9 @@
     "recordCough": {
       "header": "Record Cough",
       "title": "Steps",
-      "intro1": "Find a quiet space away from others and any noise. Remove your mask if necessary. If you feel unwell, proceed calmly.",
-      "intro2Cough": "Hold your phone 20-40 cm (8-16 inches) away from your mouth and wait for the recording to begin. Cough steadily and directly toward the microphone. Avoid making sudden loud sounds.",
+      "intro01": "Instruct the participant to prepare for their ",
+      "intro02": " cough. Begin the recording and signal the participant to cough.",
+      "intro2Cough": "Hold your phone 8–16 inches away from mouth and wait for the recording to begin. Press the \"Record\" button and cough lightly toward the screen of your phone. Avoid making sudden loud sounds.",
       "intro2Breath": "Hold the device from its 20-40 cm mouth and do not cover or block the device with plastic or other materials. ",
       "intro2Speech": "The device<strong>20-40 cm</strong>He speaks through his mouth and holds the device, covering it with plastic or other materials.<strong>Blocking</strong> Please do not do so. "
     },
@@ -380,7 +382,7 @@
     },
     "next": "Continue",
     "delete": "Delete",
-    "textCough": "Press the \"Record\" button and cough lightly toward the bottom of your phone. If you feel discomfort while coughing, stop and take a break before continuing. Press \"Stop\" when you're done.",
+    "textCough": "If discomfort is felt while coughing, stop and take a break before continuing. Press \"Stop\" when you're done.",
     "textBreath": "Press the Record button and head towards the bottom of the phone<strong>Deep and big breath</strong>Please do three times. ",
     "textSpeech": "Tap the recording button below to inhale deeply,<strong>I'll keep saying \"aaaaah\" for at least 5 seconds.</ strong>When you're done, tap the Stop button.",
     "textNext": "Click \"Continue\" to continue.",
@@ -419,7 +421,7 @@
     "next": "Upload Data",
     "retake": "Record Again",
     "backHome": "Back to the app home",
-    "closeApp" : "Close App"
+    "closeApp": "Close App"
   },
   "questionary": {
     "headerText": "question",
@@ -427,6 +429,21 @@
     "title": "Please answer the following questions:",
     "caption": "Your responses will help improve the quality of our algorithms.",
     "allThatApply": "(You can select multiple options if applicable.)",
+    "cigCount": "If you are a current smoker, how many cigarettes do you smoke per day?",
+    "cigYear": "If you are a former smoker, what year did you quit?",
+    "pastCig": "If you are a former smoker, how many cigarettes did you smoke per day?",
+    "dementiaYear": "Year of initial diagnosis with Dementia",
+    "hospitalized": "In the past 2 weeks, have you been hospitalized?",
+    "emergency": "In the past 2 weeks, have you visited the ER?",
+    "oxygenSaturation": "Oxygen Saturation (%)",
+    "heartRate": "Heart Rate (bpm)",
+    "respiratoryRate": "Respiratory Rate (breths/min)",
+    "primaryCare": "In the past 2 weeks, have you visited primary care centers for respiratory issues?",
+    "option": {
+      "yes": "Yes",
+      "no": "No",
+      "notToSay": "Prefer not to say"
+    },
     "testTaken": {
       "title": "Corona test",
       "question": "Which of the following has you ever had to be tested for a coronavirus?",
@@ -499,7 +516,8 @@
     },
     "age": "Please enter your age",
     "ageTitle": "age",
-    "ageGroup": "Please enter your age",
+    "ageGroup": "Age",
+    "yearOfBirth": "Year of Birth",
     "enterAge": "Please enter your age",
     "50+": "Over 50 years old",
     "unselectedAgeGroup": "Please select your age category",
@@ -520,15 +538,23 @@
     },
     "ethnicity": {
       "title": "Race and Ethnicity",
+      "title2": "Ethnicity",
+      "title3": "Race",
       "question": "What is your race and ethnicity?",
       "note": "(You can select multiple options if applicable.)",
+      "check": "(Check all that apply)",
       "options": {
         "asian": "Asian",
+        "americanIndianAlaskaNative": "American Indian or Alaska Native",
         "nativeAmericanOrArab": "Native American or Arab",
-        "blackOrAfrican": "Black or African",
+        "blackOrAfrican": "Black or African American",
         "hispanicOrLatin": "Hispanic or Latin",
-        "nativeHawaiianOrPacific": "Indigenous Hawaiians or Pacific Islanders",
-        "white": "White people"
+        "nativeHawaiianOrPacific": "Native Hawaiian or Other Pacific Islanders",
+        "white": "White or Caucasian",
+        "multiRacial": "Multi-racial",
+        "hispanic": "Hispanic or Latino",
+        "notHispanic": "No, Not Hispanic or Latino",
+        "other": "Other"
       }
     },
     "biologicalSex": {
@@ -542,22 +568,71 @@
         "other": "Other"
       }
     },
+    "educationLevel": {
+      "title": "Education Level",
+      "options": {
+        "highSchool": "High School Diploma or Equivalent",
+        "collegeNoDegree": "Some College, No Degree",
+        "degree": "Associate Degree",
+        "bachelor": "Bachelor's Degree",
+        "master": "Master's Degree",
+        "phd": "Doctoral or Professional Degree"
+      }
+    },
     "smokeLastSixMonths": {
       "title": "smoking",
-      "question": "Are you smoking a cigarette?",
+      "question": "Have you ever smoked?",
       "note": "This includes all types of smoking, including paper tobacco, electronic tobacco, and shisha.",
       "question2": "How many years have you smoked?",
       "enterYears": "Please enter your years",
       "options": {
-        "yes": "yes",
-        "no": "no"
+        "yes": "Yes",
+        "no": "No",
+        "other": "Other"
       }
     },
+    "smokeHistory": {
+      "title": "Current Smoking Status",
+      "options": {
+        "daily": "Daily smoker",
+        "occasional": "Occasional smoker",
+        "former": "Former smoker",
+        "never": "Neever smoked"
+      }
+    },
+
+    "dementia": {
+      "title": "Have you been diagnosed with Dementia?",
+      "options": {
+        "yes": "Yes",
+        "no": "No",
+        "notToSay": "Prefer not to say"
+      }
+    },
+    "primaryDisgnosis": {
+      "title": "If yes, what is the primary Diagnosis?",
+      "options": {
+        "alzheimer": "Alzheimer's disease",
+        "vascular": "Vascular dementia",
+        "lewy": "Lewy body dementia",
+        "frontotemporal": "Frontotemporal dementia",
+        "parkinsons": "Parkinson's disease dementia",
+        "mixed": "Mixed dementia",
+        "other": "Other"
+      }
+    },
+
     "symptoms": {
       "title": "Current symptoms",
-      "question": "<strong>Do you currently have any of the following symptoms?</strong>",
+      "question": "<strong>Do you have any current diagnosis?</strong>",
       "options": {
-        "none": "None",
+        "none": "None (Healthy)",
+        "pneumonia": "Pneumonia",
+        "copd": "COPD",
+        "influenza": "Influenza",
+        "covid": "COVID-19",
+        "rsv": "RSV",
+        "otherRD" :"Other Respiratory Diseases",
         "bodyAches": "Body aches",
         "dryCough": "Cough (dry cough)",
         "wetCough": "Cough (with mucus or phlegm)",

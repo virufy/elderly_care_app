@@ -28,13 +28,15 @@ import ProgressIndicator from 'components/ProgressIndicator';
 import { ReactComponent as ExclamationSVG } from 'assets/icons/exclamationCircle.svg';
 
 // Styles
-import { TextErrorContainer } from 'containers/Welcome/style';
+import { BoldBlackText, TextErrorContainer } from 'containers/Welcome/style';
+import DatePicker from 'components/DatePicker';
 import {
   QuestionText, MainContainer, QuestionNote,
 } from '../style';
 
 const schema = Yup.object({
   currentSymptoms: Yup.array().of(Yup.string()),
+  dateOfDiagnosis: Yup.date().nullable().required(),
 }).defined();
 
 type Step5aType = Yup.InferType<typeof schema>;
@@ -114,6 +116,7 @@ const Step2 = ({
         setActiveStep(false);
         history.push(nextStep);
       }
+      console.log(state);
     }
   };
 
@@ -147,44 +150,28 @@ const Step2 = ({
                 label: t('questionary:symptoms.options.none'),
               },
               {
-                value: 'bodyAches',
-                label: t('questionary:symptoms.options.bodyAches'),
+                value: 'pneumonia',
+                label: t('questionary:symptoms.options.pneumonia'),
               },
               {
-                value: 'dryCough',
-                label: t('questionary:symptoms.options.dryCough'),
+                value: 'copd',
+                label: t('questionary:symptoms.options.copd'),
               },
               {
-                value: 'wetCough',
-                label: t('questionary:symptoms.options.wetCough'),
+                value: 'influenza',
+                label: t('questionary:symptoms.options.influenza'),
               },
               {
-                value: 'feverChillsSweating',
-                label: t('questionary:symptoms.options.feverChillsSweating'),
+                value: 'covid',
+                label: t('questionary:symptoms.options.covid'),
               },
               {
-                value: 'headaches',
-                label: t('questionary:symptoms.options.headaches'),
-              },
-              {
-                value: 'tasteOrSmellDisorder',
-                label: t('questionary:symptoms.options.tasteOrSmellDisorder'),
-              },
-              {
-                value: 'runnyNose',
-                label: t('questionary:symptoms.options.runnyNose'),
-              },
-              {
-                value: 'breathShortness',
-                label: t('questionary:symptoms.options.breathShortness'),
-              },
-              {
-                value: 'soreThroat',
-                label: t('questionary:symptoms.options.soreThroat'),
+                value: 'rsv',
+                label: t('questionary:symptoms.options.rsv'),
               },
               {
                 value: 'other',
-                label: t('questionary:symptoms.options.other'),
+                label: t('questionary:symptoms.options.otherRD'),
               },
             ]}
             excludableValues={['none']}
@@ -202,6 +189,26 @@ const Step2 = ({
           </TextErrorContainer>
         )}
       />
+
+      <BoldBlackText>
+        If one of those respiratory diseases ha
+        s been diagnosed in the past
+        two weeks, please specify the date
+      </BoldBlackText>
+      {/* Facility Dropdown */}
+      <Controller
+        control={control}
+        name="dateOfDiagnosis"
+        defaultValue=""
+        render={({ onChange, value }) => (
+          <DatePicker
+            value={value}
+            locale="en"
+            onChange={date => onChange(date as Date)}
+          />
+        )}
+      />
+
       {activeStep && (
         <Portal>
           <WizardButtons

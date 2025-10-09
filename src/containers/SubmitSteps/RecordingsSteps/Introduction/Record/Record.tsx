@@ -52,11 +52,13 @@ interface RecordProps {
   isShortAudioCollection?: boolean;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toBase64 = (file: Blob): Promise<string> => new Promise((resolve, reject) => {
   const reader = new FileReader();
   reader.readAsDataURL(file);
   reader.onload = () => resolve(reader.result as string);
   reader.onerror = error => reject(error);
+  console.log(toBase64);
 });
 
 const Record = ({
@@ -93,11 +95,12 @@ const Record = ({
 
   const onManualUploadWithFile = async () => {
     const file = getValues('recordingFile') as File | null;
-    const base64 = file ? await toBase64(file) : null;
+    const objectUrl = file ? URL.createObjectURL(file) : null;
 
     action({
       [currentLogic]: {
-        recordingFile: base64,
+        recordingFile: file,
+        recordingUrl: objectUrl,
         uploadedFile: null,
       },
     });
@@ -106,18 +109,19 @@ const Record = ({
 
   const handleNext = async (values: RecordType) => {
     const file = values.recordingFile as File | null;
-    const base64 = file ? await toBase64(file) : null;
+    const objectUrl = file ? URL.createObjectURL(file) : null;
 
     action({
       [currentLogic]: {
-        recordingFile: base64,
+        recordingFile: file,
+        recordingUrl: objectUrl,
         uploadedFile: null,
       },
     });
 
     onNext({
       ...values,
-      recordingFile: base64 as any,
+      recordingFile: file,
     });
   };
 

@@ -15,6 +15,8 @@ export function resetStore(): any {
     'submit-steps': {
       ageGroup: '',
       biologicalSex: '',
+      yearOfBirth: '',
+      educationLevel: '',
       currentMedicalCondition: [],
       currentSymptoms: [],
       recordYourBreath: { recordingFile: null, uploadedFile: null },
