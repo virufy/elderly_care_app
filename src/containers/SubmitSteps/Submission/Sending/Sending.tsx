@@ -14,18 +14,16 @@ import useHeaderContext from 'hooks/useHeaderContext';
 
 import { ImageProcessing, TextErrorContainer } from '../style';
 
-interface StructuredData {
-  patientId: string;
-  facility: string;
-  agreedAgeConsentTerms: boolean;
-  agreedPolicyTerms: boolean;
-  agreedConsentTerms: boolean;
-  agreedAIConsentTerms: boolean;
-  agreedPrivacyTerms: boolean;
-  dateOfConsent: string;
-}
-
 // const apiUrl = process.env.REACT_APP_API_URL!;
+const apiUrl = 'https://palcg6uyya.execute-api.us-east-1.amazonaws.com/dev/submit';
+
+type StepBucket = 'recordCough1' | 'recordCough2' | 'recordCough3';
+
+const getBase64FromState = (bucket: StepBucket, submitSteps: any): string | null => {
+  const entry = submitSteps?.[bucket] ?? {};
+  const b64 = typeof entry.base64 === 'string' ? entry.base64 : '';
+  return b64 || null;
+};
 
 const Sending = (p: Wizard.StepProps) => {
   const [, setActiveStep] = useState(true);
@@ -34,45 +32,16 @@ const Sending = (p: Wizard.StepProps) => {
   const history = useHistory();
   const [error, setError] = React.useState<string | null>(null);
 
-  // Resolves a recording from File/Blob/plain object, or from a blob: URL
-  const getFileFromNode = async (node: any, fallbackName: string): Promise<File | null> => {
-    if (!node) return null;
-
-    const raw = node?.recordingFile || node?.uploadedFile;
-
-    // If it's already a File
-    if (raw instanceof File) return raw;
-
-    // If it's a Blob, wrap it as a File
-    if (raw instanceof Blob) {
-      const type = raw.type || 'audio/wav';
-      return new File([raw], fallbackName, { type });
-    }
-
-    // Some recorders store { blob, type, name }
-    if (raw?.blob instanceof Blob) {
-      const type = raw.type || raw.blob.type || 'audio/wav';
-      const name = raw.name || fallbackName;
-      return new File([raw.blob], name, { type });
-    }
-
-    // If we only have a blob: URL, fetch it and wrap as File
-    const url: unknown = node?.recordingUrl;
-    if (typeof url === 'string' && url.startsWith('blob:')) {
-      const blob = await fetch(url).then(r => r.blob());
-      const type = blob.type || 'audio/wav';
-      return new File([blob], fallbackName, { type });
-    }
-
-    return null;
-  };
-
   const sendDataToBackend = useCallback(async (): Promise<void> => {
     try {
-      setError(null);
+      // CHANGE: Read the three base64 strings directly from state
+      const b1 = getBase64FromState('recordCough1', state['submit-steps']);
+      const b2 = getBase64FromState('recordCough2', state['submit-steps']);
+      const b3 = getBase64FromState('recordCough3', state['submit-steps']);
 
-      const structuredData: StructuredData = {
-        patientId: state.welcome?.patientId ?? '',
+      // CHANGE: Build payload in the shape your Lambda expects
+      const payload = {
+        patientId: String(state.welcome?.patientId ?? ''),
         facility: state.welcome?.facility ?? '',
         agreedAgeConsentTerms: !!state.welcome?.agreedAgeConsentTerms,
         agreedPolicyTerms: !!state.welcome?.agreedPolicyTerms,
@@ -80,53 +49,66 @@ const Sending = (p: Wizard.StepProps) => {
         agreedAIConsentTerms: !!state.welcome?.agreedAIConsentTerms,
         agreedPrivacyTerms: !!state.welcome?.agreedPrivacyTerms,
         dateOfConsent: state.welcome?.dateOfConsent ?? '',
+        recordings: [
+          { data: b1 || '' },
+          { data: b2 || '' },
+          { data: b3 || '' },
+        ],
       };
 
-      // Grab the three cough files (raw .wav) — now using the async helper
-      const cough1 = await getFileFromNode(state['submit-steps']?.recordCough1, 'cough1.wav');
-      const cough2 = await getFileFromNode(state['submit-steps']?.recordCough2, 'cough2.wav');
-      const cough3 = await getFileFromNode(state['submit-steps']?.recordCough3, 'cough3.wav');
-
-      // Optional: basic validation
-      if (!(cough1 instanceof File) || !(cough2 instanceof File) || !(cough3 instanceof File)) {
-        setError('Missing one or more cough recordings.');
-        return;
+      // CHANGE: Validate all three recordings exist
+      if (payload.recordings.some(r => !r.data)) {
+        throw new Error('All three recordings are required.');
       }
 
-      console.log(state);
-
-      const form = new FormData();
-      // Attach metadata as JSON part
-      form.append(
-        'metadata',
-        new Blob([JSON.stringify(structuredData)], { type: 'application/json' }),
-        'metadata.json',
-      );
-      // Attach audio files as-is (no conversion)
-      form.append('recording1', cough1, cough1.name || 'cough1.wav');
-      form.append('recording2', cough2, cough2.name || 'cough2.wav');
-      form.append('recording3', cough3, cough3.name || 'cough3.wav');
-
-      const response = await fetch('https://palcg6uyya.execute-api.us-east-1.amazonaws.com/dev/submit', {
+      // Send to backend
+      const response = await fetch(apiUrl, {
         method: 'POST',
-        body: form,
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
       });
 
-      console.log(form);
-      console.log(response);
       if (!response.ok) {
         const text = await response.text().catch(() => '');
-        throw new Error(text || `Request failed with status ${response.status}`);
+        throw new Error(`Server error (${response.status}): ${text || 'No body'}`);
       }
 
+      console.log(response);
       const result = await response.json().catch(() => ({}));
       console.log('Response:', result);
 
-      if (p.nextStep) history.push(p.nextStep);
+      // if (p.nextStep) history.push(p.nextStep);
+      // thank-you
+
+      let redirectTo = '/thank-you'; // default
+
+      if (result && typeof result.redirectPath === 'string' && result.redirectPath.length > 0) {
+        // Backend told us exactly where to go
+        redirectTo = result.redirectPath;
+      } else if (p.nextStep) {
+        // Fallback to wizard next step
+        redirectTo = p.nextStep;
+      }
+
+      history.replace(redirectTo);
     } catch (e) {
+      // CHANGE: No nested ternaries; eslint-friendly error handling
+      let message = 'Failed to send data.';
+
+      if (e instanceof Error && e.message) {
+        message = e.message;
+      } else if (typeof e === 'string') {
+        message = e;
+      } else {
+        try {
+          message = JSON.stringify(e);
+        } catch {
+          // keep default
+        }
+      }
+
       console.error('Error sending data:', e);
-      const msg = e instanceof Error ? e.message : String(e ?? 'Failed to send data.');
-      setError(msg);
+      setError(message || 'Failed to send data.');
     }
   }, [state, history, p.nextStep]);
 

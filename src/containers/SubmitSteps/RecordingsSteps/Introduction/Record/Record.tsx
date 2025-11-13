@@ -53,12 +53,17 @@ interface RecordProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// Convert Blob/File to pure base64 (no data: prefix)
+
 const toBase64 = (file: Blob): Promise<string> => new Promise((resolve, reject) => {
   const reader = new FileReader();
+  reader.onerror = reject;
+  reader.onload = () => {
+    const s = String(reader.result || '');
+    const base64 = s.includes(',') ? s.split(',')[1] : s;
+    resolve(base64 || '');
+  };
   reader.readAsDataURL(file);
-  reader.onload = () => resolve(reader.result as string);
-  reader.onerror = error => reject(error);
-  console.log(toBase64);
 });
 
 const Record = ({
@@ -96,12 +101,12 @@ const Record = ({
   const onManualUploadWithFile = async () => {
     const file = getValues('recordingFile') as File | null;
     const objectUrl = file ? URL.createObjectURL(file) : null;
+    const base64 = file ? await toBase64(file) : '';
 
     action({
       [currentLogic]: {
-        recordingFile: file,
+        base64,
         recordingUrl: objectUrl,
-        uploadedFile: null,
       },
     });
     onManualUpload?.();
@@ -110,12 +115,12 @@ const Record = ({
   const handleNext = async (values: RecordType) => {
     const file = values.recordingFile as File | null;
     const objectUrl = file ? URL.createObjectURL(file) : null;
+    const base64 = file ? await toBase64(file) : '';
 
     action({
       [currentLogic]: {
-        recordingFile: file,
+        base64,
         recordingUrl: objectUrl,
-        uploadedFile: null,
       },
     });
 
