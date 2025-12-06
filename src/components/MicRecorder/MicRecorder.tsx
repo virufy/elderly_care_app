@@ -72,7 +72,7 @@ export interface RecorderServiceType {
 
 const MicRecorder = ({
   className = '',
-  maxTimeInSeconds = 30, // 30 segs
+  maxTimeInSeconds = 15, // 15 segs
   minTimeInSeconds = 5, // 5 segs
   onNewRecord,
   delay = 500, // 500ms

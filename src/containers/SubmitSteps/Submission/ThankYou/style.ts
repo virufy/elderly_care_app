@@ -1,5 +1,5 @@
-import { colors } from 'theme/index';
 import styled, { css } from 'styled-components';
+import { colors } from 'theme/index';
 
 export const ThankYouLayout = styled.div`
   text-align: left;

@@ -14,6 +14,8 @@ import WizardButtons from 'components/WizardButtons';
 // Images
 import UploadSVG from 'assets/icons/upload.svg';
 
+import { setAudioBase64 } from 'helper/audioCache';
+
 // Styles
 import {
   MainContainer,
@@ -30,16 +32,22 @@ const audioMinLength: CommonJSON<number> = {
   recordYourCough: 3,
 }; // in seconds
 
+// CHANGE: new max length in seconds
+const audioMaxLengthInSeconds = 15; // in seconds
+
 const schema = Yup.object({
-  recordingFile: Yup.mixed()
+  recordingFile: (Yup.mixed() as any)
     .required('ERROR.FILE_REQUIRED')
-    // @ts-ignore
     .validateAudioSize(audioMaxSizeInMb)
-    // @ts-ignore
-    .when('$_currentLogic', (value: string, _schema: Yup.MixedSchema) => _schema.validateAudioLength(audioMinLength[value] || 5)),
+    .when(
+      '$_currentLogic',
+      (value: string, _schema: any) => _schema.validateAudioLength(audioMinLength[value] || 5),
+    ),
 }).defined();
 
-type RecordType = Yup.InferType<typeof schema>;
+type RecordType = {
+  recordingFile: File | null;
+};
 
 interface RecordProps {
   // isCoughLogic: boolean,
@@ -52,9 +60,7 @@ interface RecordProps {
   isShortAudioCollection?: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 // Convert Blob/File to pure base64 (no data: prefix)
-
 const toBase64 = (file: Blob): Promise<string> => new Promise((resolve, reject) => {
   const reader = new FileReader();
   reader.onerror = reject;
@@ -69,7 +75,7 @@ const toBase64 = (file: Blob): Promise<string> => new Promise((resolve, reject) 
 const Record = ({
   onNext,
   onManualUpload,
-  onSkip,
+  onSkip: _onSkip, // eslint-disable-line @typescript-eslint/no-unused-vars
   defaultValues,
   currentLogic,
   action,
@@ -80,9 +86,10 @@ const Record = ({
     bindTo:
       document && (document.getElementById('wizard-buttons') as HTMLDivElement),
   });
+
   const {
-    handleSubmit, control, getValues, formState,
-  } = useForm({
+    handleSubmit, control, formState,
+  } = useForm<RecordType>({
     mode: 'onChange',
     defaultValues,
     context: {
@@ -98,17 +105,9 @@ const Record = ({
   // Refs
   const micKey = React.useRef<number>(1);
 
-  const onManualUploadWithFile = async () => {
-    const file = getValues('recordingFile') as File | null;
-    const objectUrl = file ? URL.createObjectURL(file) : null;
-    const base64 = file ? await toBase64(file) : '';
-
-    action({
-      [currentLogic]: {
-        base64,
-        recordingUrl: objectUrl,
-      },
-    });
+  // CHANGE: manual upload should just navigate to the manual upload step,
+  // not try to reuse the mic recording file.
+  const onManualUploadWithFile = () => {
     onManualUpload?.();
   };
 
@@ -117,10 +116,17 @@ const Record = ({
     const objectUrl = file ? URL.createObjectURL(file) : null;
     const base64 = file ? await toBase64(file) : '';
 
+    if (base64) {
+      // store in memory only
+      setAudioBase64(currentLogic, base64);
+    }
+
+    // 👇 Mutually exclusive: recording present, uploaded cleared
     action({
       [currentLogic]: {
-        base64,
         recordingUrl: objectUrl,
+        recordingFile: file || null,
+        uploadedFile: null,
       },
     });
 
@@ -144,6 +150,7 @@ const Record = ({
                 onNewRecord={onChange}
                 recordingFile={defaultValues?.recordingFile}
                 minTimeInSeconds={audioMinLength[currentLogic]}
+                maxTimeInSeconds={audioMaxLengthInSeconds}
                 isShortAudioCollection={isShortAudioCollection}
               />
             )}
@@ -157,14 +164,14 @@ const Record = ({
             leftDisabled={!isValid}
             leftHandler={handleSubmit(handleNext)}
           />
-          <div style={{ minWidth: '100%' }}>
+          {/* <div style={{ minWidth: '100%' }}>
             <WizardButtons
               invert
               skip
               leftLabel="Skip"
               leftHandler={onSkip}
             />
-          </div>
+          </div> */}
           <UploadContainer onClick={onManualUploadWithFile}>
             <UploadImage src={UploadSVG} />
             <UploadText>{t('recordingsRecord:upload')}</UploadText>

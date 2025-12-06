@@ -27,7 +27,7 @@ import { ReactComponent as ExclamationSVG } from 'assets/icons/exclamationCircle
 
 // Styles
 import { TextErrorContainer } from 'containers/Welcome/style';
-import {QuestionText, MainContainer, QuestionInput,} from '../style';
+import { QuestionText, MainContainer, QuestionInput } from '../style';
 
 const schema = Yup.object({
   feverStartDate: Yup.string().required('Fever start date required'),

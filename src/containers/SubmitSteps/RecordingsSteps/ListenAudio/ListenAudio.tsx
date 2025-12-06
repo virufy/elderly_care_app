@@ -78,6 +78,10 @@ const ListenAudio = ({
   const myState = state?.[storeKey]?.[metadata?.currentLogic];
   const file: File | null = myState ? myState.recordingFile || myState.uploadedFile : null;
 
+  // CHANGE: also use recordingUrl / base64 from state for playback
+  const recordingUrlFromState: string | undefined = myState?.recordingUrl;
+  const base64FromState: string | undefined = myState?.base64;
+
   // Refs
   const refAudio = React.useRef<HTMLMediaElement>(null);
   const refTimer = React.useRef<any>();
@@ -89,9 +93,11 @@ const ListenAudio = ({
   const [duration, setDuration] = React.useState<number>(0);
   const [progressSeconds, setProgressSeconds] = React.useState<number>(0);
 
-  // Effects
   React.useEffect(() => {
+    let isMounted = true;
+
     const stepTimer = (ms: number) => {
+      if (!isMounted) return;
       setProgressSeconds(ms / 1000);
       refProgress.current = ms;
       refTimer.current = setTimeout(() => {
@@ -102,21 +108,26 @@ const ListenAudio = ({
     const fnPlaying = () => {
       stepTimer(refProgress.current);
       setTimeout(() => {
+        if (!isMounted) return;
         setPlaying(true);
       }, 0);
     };
 
     const fnPause = (e: any) => {
+      if (!isMounted) return;
       if (e.target.currentTime >= e.target.duration) {
         setProgressSeconds(0);
         refProgress.current = 0;
       }
       setPlaying(false);
-      clearTimeout(refTimer.current);
+      if (refTimer.current) {
+        clearTimeout(refTimer.current);
+      }
     };
 
     const fnLoad = async (e: any) => {
       const recordDuration = await getDuration(e.target);
+      if (!isMounted) return;
       setDuration(recordDuration);
     };
 
@@ -127,11 +138,13 @@ const ListenAudio = ({
     }
 
     return () => {
+      isMounted = false;
+      if (refTimer.current) {
+        clearTimeout(refTimer.current);
+      }
       if (refAudio.current) {
         refAudio.current.removeEventListener('playing', fnPlaying);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         refAudio.current.removeEventListener('pause', fnPause);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         refAudio.current.removeEventListener('loadedmetadata', fnLoad);
       }
     };
@@ -147,6 +160,7 @@ const ListenAudio = ({
       fileName: '',
       fileSize: '',
     };
+
     if (file && file.size !== undefined) {
       try {
         const url = URL.createObjectURL(file);
@@ -156,24 +170,34 @@ const ListenAudio = ({
       } catch (e) {
         console.log('Error', e);
       }
+    } else if (recordingUrlFromState) {
+      // CHANGE: if we stored a blob URL in state, use that
+      out.fileUrl = recordingUrlFromState;
+      if (!out.fileName) {
+        out.fileName = 'recording.wav';
+      }
+    } else if (base64FromState) {
+      // CHANGE: fallback to base64 data URL
+      out.fileUrl = `data:audio/wav;base64,${base64FromState}`;
+      if (!out.fileName) {
+        out.fileName = 'recording.wav';
+      }
     }
+
     return out;
-  }, [file]);
+  }, [file, recordingUrlFromState, base64FromState]);
 
   // Handlers
   const handleNext = React.useCallback(() => {
     if (nextStep) {
-      // action(values);
       setActiveStep(false);
       history.push(nextStep);
     }
   }, [history, nextStep]);
 
   const handleDoBack = React.useCallback(() => {
-    if (playing) {
-      if (refAudio.current) {
-        refAudio.current.pause();
-      }
+    if (playing && refAudio.current) {
+      refAudio.current.pause();
     }
     setActiveStep(false);
     if (location.state && location.state.from) {
@@ -192,10 +216,8 @@ const ListenAudio = ({
   }, [location.state, previousStep, history, isCoughLogic, isBreathLogic, isShortAudioCollection, playing]);
 
   const handleRemoveFile = React.useCallback(() => {
-    if (playing) {
-      if (refAudio.current) {
-        refAudio.current.pause();
-      }
+    if (playing && refAudio.current) {
+      refAudio.current.pause();
     }
 
     if (state?.[storeKey][metadata?.currentLogic]) {
@@ -210,18 +232,14 @@ const ListenAudio = ({
   }, [playing, state, storeKey, metadata, action, handleDoBack]);
 
   const handlePlay = React.useCallback(() => {
-    if (!playing) {
-      if (refAudio.current) {
-        refAudio.current.play();
-      }
+    if (!playing && refAudio.current) {
+      refAudio.current.play();
     }
   }, [playing]);
 
   const handlePause = React.useCallback(() => {
-    if (playing) {
-      if (refAudio.current) {
-        refAudio.current.pause();
-      }
+    if (playing && refAudio.current) {
+      refAudio.current.pause();
     }
   }, [playing]);
 

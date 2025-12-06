@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import React from 'react';
 import {
   OptionListCheck, OptionListInput,
@@ -23,7 +24,9 @@ interface OptionListProps {
   singleSelection?: boolean;
   onChange?: (value: OptionListValue) => void;
   allowAddOther?: boolean;
+  // eslint-disable react/no-unused-prop-types
   addOtherLabel?: string;
+  // eslint-disable react/no-unused-prop-types
   enableOther?: boolean;
   otherPlaceholder?: string;
   isCheckbox?: boolean;
@@ -34,7 +37,6 @@ const OptionList = ({
   value = defaultValue, items, excludableValues, singleSelection, isCheckbox,
   onChange, allowAddOther, otherPlaceholder,
 }: OptionListProps) => {
-
   const selectItem = (selectedItem: OptionListItemProps) => {
     const { selected = [] } = value;
     let newSelected: string[] = [];
@@ -85,16 +87,18 @@ const OptionList = ({
               {item.label}
             </OptionListItemLabel>
             <OptionListCheck isSelected={isSelected} checkbox={isCheckbox} />
-            {item.value === 'other' && 
-            <OptionListInputContainer>
-              <OptionListInput
-                placeholder={otherPlaceholder}
-                value={value.selected.find(item => item.startsWith('other:'))?.split(': ')[1] || ''}
-                isSelected={!!value.selected.find(item => item.startsWith('other:'))}
-                onClick={(e) => e.stopPropagation()}
-                onChange={e => otherChangeHandler(e.target.value, e)}
-              />
-          </OptionListInputContainer>}
+            {item.value === 'other'
+            && (
+              <OptionListInputContainer>
+                <OptionListInput
+                  placeholder={otherPlaceholder}
+                  value={value.selected.find(val => val.startsWith('other:'))?.split(': ')[1] || ''}
+                  isSelected={!!value.selected.find(vald => vald.startsWith('other:'))}
+                  onClick={e => e.stopPropagation()}
+                  onChange={e => otherChangeHandler(e.target.value, e)}
+                />
+              </OptionListInputContainer>
+            )}
 
           </OptionListItem>
         );
@@ -113,5 +117,4 @@ OptionList.defaultProps = {
   enableOther: false,
   otherPlaceholder: '',
 };
-
 export default React.memo(OptionList);
