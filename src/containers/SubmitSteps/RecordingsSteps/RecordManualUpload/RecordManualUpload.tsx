@@ -23,6 +23,7 @@ import { useModal } from 'hooks/useModal';
 // Utils
 import { updateAction } from 'utils/wizard';
 import { scrollToTop } from 'helper/scrollHelper';
+import { setAudioBase64 } from 'helper/audioCache'; // 👈 NEW
 
 // Styles
 import {
@@ -41,16 +42,29 @@ const audioMinLength: CommonJSON<number> = {
   recordYourCough: 3,
 }; // in seconds
 
+const audioMaxLengthInSeconds = 15; // same max as recorder
+
 const mimeTypes = 'audio/wav,audio/wave,audio/wav,audio/x-wav,audio/x-pn-wav,audio/mp3,audio/ogg';
 
+// same TS fix as before
 const schema = Yup.object({
-  uploadedFile: Yup.mixed()
+  uploadedFile: (Yup.mixed() as any)
     .required('ERROR.FILE_REQUIRED')
-  // @ts-ignore
     .validateAudioSize(audioMaxSizeInMb)
-  // @ts-ignore
-    .when('$_currentLogic', (value: string, _schema: Yup.MixedSchema) => _schema.validateAudioLength(audioMinLength[value] || 5)),
+    .when('$_currentLogic', (value: string, _schema: any) => _schema.validateAudioLength(audioMinLength[value] || 5)),
 }).defined();
+
+// helper to get base64, same as in Record.tsx
+const toBase64 = (file: Blob): Promise<string> => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.onerror = reject;
+  reader.onload = () => {
+    const s = String(reader.result || '');
+    const base64 = s.includes(',') ? s.split(',')[1] : s;
+    resolve(base64 || '');
+  };
+  reader.readAsDataURL(file);
+});
 
 const RecordManualUpload = ({
   storeKey,
@@ -74,6 +88,9 @@ const RecordManualUpload = ({
   } = useForm({
     mode: 'onChange',
     defaultValues: state?.[storeKey]?.[metadata?.currentLogic],
+    context: {
+      _currentLogic: metadata?.currentLogic,
+    },
     resolver: yupResolver(schema),
   });
   const { t } = useTranslation();
@@ -84,13 +101,21 @@ const RecordManualUpload = ({
   const [activeStep, setActiveStep] = React.useState(true);
   const [errorMsg, setErrorMsg] = React.useState('');
 
-  // Handlers
-  const handleNext = React.useCallback((values: File) => {
+  // 👇 when upload is valid, convert to base64, cache, and store only small info in state
+  const handleNext = React.useCallback(async (file: File) => {
+    if (!file) return;
+
+    const base64 = await toBase64(file);
+    if (base64 && metadata?.currentLogic) {
+      setAudioBase64(metadata.currentLogic, base64);
+    }
+
     if (nextStep) {
       action({
         [metadata?.currentLogic]: {
-          recordingFile: null,
-          uploadedFile: values,
+          recordingFile: null, // 👈 ensure mutual exclusion
+          recordingUrl: null,
+          uploadedFile: file,
         },
       });
       setActiveStep(false);
@@ -107,20 +132,62 @@ const RecordManualUpload = ({
     }
   }, [history, previousStep, isShortAudioCollection]);
 
-  const handleUpload = React.useCallback(e => {
-    schema.validate({ uploadedFile: e }).then(() => {
-      handleNext(e);
-    }).catch(err => {
-      if (err.errors[0] === 'ERROR.FILE_SIZE') {
-        setErrorMsg(t('recordingsRecordManual:fileSizeTooBig'));
-      } if (err.errors[0] === 'ERROR.FILE_REQUIRED') {
-        setErrorMsg(t('recordingsRecordManual:fileRequired'));
-      } else {
-        setErrorMsg(t('recordingsRecordManual:fileDurationTooShort'));
-      }
+  // validate size + duration 5–15s, then call handleNext(file)
+  const handleUpload = React.useCallback((file?: File) => {
+    if (!file) {
+      setErrorMsg(t('recordingsRecordManual:fileRequired'));
       openModal();
-    });
-  }, [handleNext, t, openModal]);
+      return;
+    }
+
+    schema
+      .validate(
+        { uploadedFile: file },
+        { context: { _currentLogic: metadata?.currentLogic } },
+      )
+      .then(() => {
+        const objectUrl = URL.createObjectURL(file);
+        const audio = new Audio();
+        audio.preload = 'metadata';
+        audio.onloadedmetadata = () => {
+          window.URL.revokeObjectURL(objectUrl);
+          const { duration } = audio;
+
+          const minLength = audioMinLength[metadata?.currentLogic] || 5;
+
+          if (duration < minLength) {
+            setErrorMsg(t('recordingsRecordManual:fileDurationTooShort'));
+            openModal();
+            return;
+          }
+
+          if (duration > audioMaxLengthInSeconds) {
+            setErrorMsg(t('recordingsRecordManual:fileDurationTooLong'));
+            openModal();
+            return;
+          }
+
+          // ✅ everything good – proceed
+          handleNext(file);
+        };
+        audio.onerror = () => {
+          window.URL.revokeObjectURL(objectUrl);
+          setErrorMsg(t('recordingsRecordManual:fileRequired'));
+          openModal();
+        };
+        audio.src = objectUrl;
+      })
+      .catch(err => {
+        if (err.errors && err.errors[0] === 'ERROR.FILE_SIZE') {
+          setErrorMsg(t('recordingsRecordManual:fileSizeTooBig'));
+        } else if (err.errors && err.errors[0] === 'ERROR.FILE_REQUIRED') {
+          setErrorMsg(t('recordingsRecordManual:fileRequired'));
+        } else {
+          setErrorMsg(t('recordingsRecordManual:fileDurationTooShort'));
+        }
+        openModal();
+      });
+  }, [handleNext, t, openModal, metadata]);
 
   // Effects
   useEffect(() => {

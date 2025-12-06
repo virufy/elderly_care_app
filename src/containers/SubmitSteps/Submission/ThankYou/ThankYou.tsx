@@ -28,7 +28,7 @@ const ThankYou = (p: Wizard.StepProps) => {
   const { t } = useTranslation();
   const [, setActiveStep] = useState(true);
   const { setDoGoBack, setTitle, setType } = useHeaderContext();
-  const { state, action } = useStateMachine();
+  const { state, actions } = useStateMachine({ reset: resetStore() });
   const history = useHistory();
   const { Portal } = usePortal({ bindTo: document && document.getElementById('wizard-buttons') as HTMLDivElement });
   const { handleSubmit } = useForm({ mode: 'onChange' });
@@ -37,7 +37,7 @@ const ThankYou = (p: Wizard.StepProps) => {
 
   const onSubmit = async (values: ThankYouType, destination: 'previousStep' | 'nextStep') => {
     if (values) {
-      action(values);
+      actions.update?.(values);
       if (destination === 'previousStep' && p.previousStep) {
         setActiveStep(false);
         history.push(p.previousStep);
@@ -50,9 +50,9 @@ const ThankYou = (p: Wizard.StepProps) => {
 
   // Function to handle resetting the form
   const handleReset = useCallback(() => {
-    action(resetStore());
+    actions.reset({});
     localStorage.clear();
-  }, [action]);
+  }, [actions]);
 
   const handleDoBack = useCallback(() => {
     if (p.previousStep) {
@@ -64,6 +64,13 @@ const ThankYou = (p: Wizard.StepProps) => {
     // do one-time init here
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleBackToHome = useCallback(() => {
+    actions.reset({});
+    localStorage.removeItem('elderly_care-wizard');
+    setActiveStep(false);
+    history.push('/');
+  }, [actions, history]);
 
   useEffect(() => {
     scrollToTop();
@@ -100,7 +107,7 @@ const ThankYou = (p: Wizard.StepProps) => {
         <WizardButtons
           invert
           leftLabel="Back to the app home"
-          leftHandler={handleSubmit(values => onSubmit(values, 'nextStep'))}
+          leftHandler={handleBackToHome}
         />
         <WizardButtons
           invert

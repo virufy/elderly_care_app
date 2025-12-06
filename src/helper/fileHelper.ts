@@ -27,10 +27,8 @@ const sizeAsHuman = (bytes: number, si?: boolean) => {
 //   return theBlob as File;
 // };
 
-const blobToFile = (blob: Blob, fileName: string): File => {
-  return new File([blob], fileName, { type: blob.type, lastModified: Date.now() });
-};
-
+// eslint-disable-next-line max-len
+const blobToFile = (blob: Blob, fileName: string): File => new File([blob], fileName, { type: blob.type, lastModified: Date.now() });
 
 export default {
   sizeAsHuman,

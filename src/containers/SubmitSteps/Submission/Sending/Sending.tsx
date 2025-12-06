@@ -12,17 +12,46 @@ import { scrollToTop } from 'helper/scrollHelper';
 // Hooks
 import useHeaderContext from 'hooks/useHeaderContext';
 
+import { getAudioBase64, setAudioBase64 } from 'helper/audioCache';
 import { ImageProcessing, TextErrorContainer } from '../style';
 
 // const apiUrl = process.env.REACT_APP_API_URL!;
 const apiUrl = 'https://palcg6uyya.execute-api.us-east-1.amazonaws.com/dev/submit';
 
+const toBase64 = (file: Blob): Promise<string> => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.onerror = reject;
+  reader.onload = () => {
+    const s = String(reader.result || '');
+    const base64 = s.includes(',') ? s.split(',')[1] : s;
+    resolve(base64 || '');
+  };
+  reader.readAsDataURL(file);
+});
+
 type StepBucket = 'recordCough1' | 'recordCough2' | 'recordCough3';
 
-const getBase64FromState = (bucket: StepBucket, submitSteps: any): string | null => {
+const getOrBuildBase64 = async (bucket: StepBucket, submitSteps: any): Promise<string> => {
+  const fromCache = getAudioBase64(bucket);
+  if (fromCache) return fromCache;
+
   const entry = submitSteps?.[bucket] ?? {};
-  const b64 = typeof entry.base64 === 'string' ? entry.base64 : '';
-  return b64 || null;
+
+  if (typeof entry.base64 === 'string' && entry.base64) {
+    setAudioBase64(bucket, entry.base64);
+    return entry.base64;
+  }
+
+  const file: File | null = entry.recordingFile || entry.uploadedFile || null;
+  if (file) {
+    const base64 = await toBase64(file);
+    if (base64) {
+      setAudioBase64(bucket, base64);
+      return base64;
+    }
+  }
+
+  return '';
 };
 
 const Sending = (p: Wizard.StepProps) => {
@@ -34,12 +63,15 @@ const Sending = (p: Wizard.StepProps) => {
 
   const sendDataToBackend = useCallback(async (): Promise<void> => {
     try {
-      // CHANGE: Read the three base64 strings directly from state
-      const b1 = getBase64FromState('recordCough1', state['submit-steps']);
-      const b2 = getBase64FromState('recordCough2', state['submit-steps']);
-      const b3 = getBase64FromState('recordCough3', state['submit-steps']);
+      const submitSteps = state['submit-steps'] || {};
 
-      // CHANGE: Build payload in the shape your Lambda expects
+      // ✅ IMPORTANT: await the async function, or use Promise.all
+      const [b1, b2, b3] = await Promise.all([
+        getOrBuildBase64('recordCough1', submitSteps),
+        getOrBuildBase64('recordCough2', submitSteps),
+        getOrBuildBase64('recordCough3', submitSteps),
+      ]);
+
       const payload = {
         patientId: String(state.welcome?.patientId ?? ''),
         facility: state.welcome?.facility ?? '',
@@ -56,12 +88,11 @@ const Sending = (p: Wizard.StepProps) => {
         ],
       };
 
-      // CHANGE: Validate all three recordings exist
+      // Only error if we REALLY have missing audio
       if (payload.recordings.some(r => !r.data)) {
         throw new Error('All three recordings are required.');
       }
 
-      // Send to backend
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
@@ -73,26 +104,18 @@ const Sending = (p: Wizard.StepProps) => {
         throw new Error(`Server error (${response.status}): ${text || 'No body'}`);
       }
 
-      console.log(response);
       const result = await response.json().catch(() => ({}));
-      console.log('Response:', result);
 
-      // if (p.nextStep) history.push(p.nextStep);
-      // thank-you
-
-      let redirectTo = '/thank-you'; // default
+      let redirectTo = '/thank-you';
 
       if (result && typeof result.redirectPath === 'string' && result.redirectPath.length > 0) {
-        // Backend told us exactly where to go
         redirectTo = result.redirectPath;
       } else if (p.nextStep) {
-        // Fallback to wizard next step
         redirectTo = p.nextStep;
       }
 
       history.replace(redirectTo);
     } catch (e) {
-      // CHANGE: No nested ternaries; eslint-friendly error handling
       let message = 'Failed to send data.';
 
       if (e instanceof Error && e.message) {
@@ -103,7 +126,7 @@ const Sending = (p: Wizard.StepProps) => {
         try {
           message = JSON.stringify(e);
         } catch {
-          // keep default
+          // ignore
         }
       }
 

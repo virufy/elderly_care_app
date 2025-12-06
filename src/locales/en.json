@@ -368,7 +368,7 @@
     "retryButton": "retry",
     "releaseButtonStart": "When you release it, start recording",
     "releaseButtonStop": "When you release your hand, the recording will stop",
-    "shortRecording": "at least{{seconds}}Please record for seconds"
+    "shortRecording": "Please record for atleast {{seconds}} seconds"
   },
   "recordingsRecord": {
     "recordCough": {

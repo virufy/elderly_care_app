@@ -27,22 +27,24 @@ import i18n from 'i18n';
 import {
   WelcomeContent, WelcomeStyledForm, QuestionInput,
   WelcomeItemListItem, WelcomeItemList,
-  BoldBlackText, WelcomeSelect, TextErrorContainer,
+  BoldBlackText, TextErrorContainer,
   HeaderImageContainer,
   HeaderImage,
   LogoWhiteBG,
 } from '../style';
 
-const facilityList = ['Fukuoka Sun Smile Tohara', 'Fukuoka Fujinomi Association', 'Fukui Laugh Day', 'Fukuoka City Hall', 'others'];
-
-const facilityOptions = facilityList.map(facility => ({ label: facility, value: facility }));
-
 const schema = Yup.object().shape({
-  patientId: Yup.number().typeError('Patient ID must be a number').required('Patient ID is required'),
-  facility: Yup.string().required('Facility is required'),
+  // Patient ID: must be a non-negative number
+  patientId: Yup.number()
+    .typeError('Patient ID must be a number')
+    .integer('Patient ID must be an integer')
+    .min(0, 'Patient ID cannot be negative')
+    .required('Patient ID is required'),
+  // Facility: still required, but now plain string from textbox
+  facility: Yup.string()
+    .required('Facility is required'),
   location: Yup.string().default(''),
   language: Yup.string().default(i18n.language),
-
 }).defined();
 
 type Step1Type = Yup.InferType<typeof schema>;
@@ -75,7 +77,6 @@ const Step1 = (p: Wizard.StepProps) => {
         location: '',
       },
     });
-    // do one-time init here
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -129,7 +130,9 @@ const Step1 = (p: Wizard.StepProps) => {
                 type="number"
                 placeholder="Please enter your participant ID"
                 className="question-input"
-                value={value || ''}
+                value={value ?? ''}
+                // prevent negative typing in UI as well
+                min={0}
                 onChange={e => onChange(e.target.value)}
                 autoComplete="off"
               />
@@ -145,19 +148,19 @@ const Step1 = (p: Wizard.StepProps) => {
           <BoldBlackText>
             Facility
           </BoldBlackText>
-          {/* Facility Dropdown */}
+          {/* Facility as textbox instead of dropdown */}
           <Controller
             control={control}
             name="facility"
-            defaultValue="" // {facilityOptions[0].value}
-            render={({ onChange, value: valueController }) => (
-              <WelcomeSelect
-                placeholder="Please select a facility"
-                options={facilityOptions}
-                onChange={(e: any) => { onChange(e?.value); }}
-                value={facilityOptions.find(option => option.value === valueController)}
-                className="custom-select"
-                classNamePrefix="custom-select"
+            defaultValue=""
+            render={({ onChange, value }) => (
+              <QuestionInput
+                type="text"
+                placeholder="Please enter the facility name"
+                className="question-input"
+                value={value ?? ''}
+                onChange={e => onChange(e.target.value)}
+                autoComplete="off"
               />
             )}
           />
@@ -170,33 +173,32 @@ const Step1 = (p: Wizard.StepProps) => {
 
           <BoldBlackText>To ensure your safety, we recommend the following:</BoldBlackText>
           <WelcomeItemList>
-            <WelcomeItemListItem>If you have any underlying medical conditions
+            <WelcomeItemListItem>
+              If you have any underlying medical conditions
               that increase your risk of coughing,
               check with your healthcare provider before participating.
             </WelcomeItemListItem>
-            <WelcomeItemListItem>If you feel that your symptoms are getting worse,
+            <WelcomeItemListItem>
+              If you feel that your symptoms are getting worse,
               please consult your local medical institution.
             </WelcomeItemListItem>
-            <WelcomeItemListItem>Please confirm that you agree to participate
+            <WelcomeItemListItem>
+              Please confirm that you agree to participate
               in the demonstration experiment.
             </WelcomeItemListItem>
           </WelcomeItemList>
 
-          {
-            activeStep && (
-              <Portal>
-                <WizardButtons
-                  invert
-                  leftLabel="Next"
-                  leftHandler={handleSubmit(onSubmit)}
-                  leftDisabled={!isValid}
-                />
-              </Portal>
-            )
-          }
+          {activeStep && (
+            <Portal>
+              <WizardButtons
+                invert
+                leftLabel="Next"
+                leftHandler={handleSubmit(onSubmit)}
+                leftDisabled={!isValid}
+              />
+            </Portal>
+          )}
         </WelcomeContent>
-        {/* <FooterInstallAsApp /> */}
-
       </WelcomeStyledForm>
     </>
   );
