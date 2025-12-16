@@ -35,7 +35,7 @@ import {
   ArrowUp,
 } from './style';
 
-const audioMaxSizeInMb = 5;
+const audioMaxSizeInMb = 1.5;
 const audioMinLength: CommonJSON<number> = {
   recordYourBreath: 5,
   recordYourSpeech: 5,
@@ -136,6 +136,13 @@ const RecordManualUpload = ({
   const handleUpload = React.useCallback((file?: File) => {
     if (!file) {
       setErrorMsg(t('recordingsRecordManual:fileRequired'));
+      openModal();
+      return;
+    }
+
+    const maxBytes = audioMaxSizeInMb * 1024 * 1024;
+    if (file.size > maxBytes) {
+      setErrorMsg(t('recordingsRecordManual:fileSizeTooBig'));
       openModal();
       return;
     }

@@ -398,10 +398,11 @@
     "next": "Next",
     "micError": "If you cannot access the microphone, please upload an audio file (.wav/.mp3/.ogg)",
     "micErrorDescription": "Please upload your audio file here.",
-    "fileDurationTooShort": "Please upload files that last for at least 3 seconds.",
-    "fileSizeTooBig": "Please upload files of 5MB or less.",
+    "fileDurationTooShort": "Please upload files that last for at least 5 seconds.",
+    "fileSizeTooBig": "Please upload files of 1.5MB or less.",
     "fileRequired": "Please upload the file",
-    "uploadFile": "Upload a file"
+    "uploadFile": "Upload a file",
+    "fileDurationTooLong": "Please upload files that last for at most 15 seconds."
   },
   "recordingsListen": {
     "recordCough": {

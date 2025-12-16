@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import { useStateMachine } from 'little-state-machine';
-import { useForm } from 'react-hook-form';
+// import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
 // Utils
@@ -31,10 +31,11 @@ const ThankYou = (p: Wizard.StepProps) => {
   const { state, actions } = useStateMachine({ reset: resetStore() });
   const history = useHistory();
   const { Portal } = usePortal({ bindTo: document && document.getElementById('wizard-buttons') as HTMLDivElement });
-  const { handleSubmit } = useForm({ mode: 'onChange' });
+  // const { handleSubmit } = useForm({ mode: 'onChange' });
   const schema = Yup.object().shape({}).defined();
   type ThankYouType = Yup.InferType<typeof schema>;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onSubmit = async (values: ThankYouType, destination: 'previousStep' | 'nextStep') => {
     if (values) {
       actions.update?.(values);
@@ -109,11 +110,11 @@ const ThankYou = (p: Wizard.StepProps) => {
           leftLabel="Back to the app home"
           leftHandler={handleBackToHome}
         />
-        <WizardButtons
+        {/* <WizardButtons
           invert
           leftLabel="Close App"
           leftHandler={handleSubmit(values => onSubmit(values, 'previousStep'))}
-        />
+        /> */}
       </Portal>
 
     </ThankYouLayout>
