@@ -32,7 +32,7 @@ function getCoughSteps(storeKey: string): Wizard.Step[] {
       props: {
         storeKey,
         previousStep: `${baseUrl}/step-record/cough1`,
-        nextStep: `${baseUrl}/step-listen/cough2`,
+        nextStep: `${baseUrl}/step-listen/cough1`,
         metadata: {
           currentLogic: 'recordCough1',
         },
