@@ -17,7 +17,9 @@ import {
 
 // Styles
 import {
-  HeaderContainer, ArrowLeft, ArrowLefContainer, LogoSize, LogoImg, TitleContainer, /* CloseLeft, */
+  HeaderContainer,
+  // ArrowLeft, ArrowLefContainer,
+  LogoSize, LogoImg, TitleContainer, /* CloseLeft, */
 } from './style';
 
 type ContextType = {
@@ -33,7 +35,7 @@ type ContextType = {
   doGoBack?: null | any
 };
 
-const noop = () => {};
+const noop = () => { };
 
 export const HeaderContext = createContext<ContextType>({
   title: '',
@@ -79,7 +81,7 @@ export const HeaderContextProvider = ({ children }: HeaderProps) => {
 
 const Header = () => {
   const {
-    title, subtitle, type, doGoBack, logoSize,
+    title, subtitle, type, logoSize,
   } = useContext(HeaderContext);
   const location = useLocation();
 
@@ -90,7 +92,8 @@ const Header = () => {
       {
         type !== 'null' && (
           <HeaderContainer type={type} isMobile={isMobile} hasSubtitle={!!subtitle}>
-            {(doGoBack && location.pathname !== '/elderlycare/welcome') && <ArrowLefContainer onClick={doGoBack}><ArrowLeft /></ArrowLefContainer>}
+            {/* eslint-disable-next-line max-len */}
+            {/* {(doGoBack && location.pathname !== '/elderlycare/welcome') && <ArrowLefContainer onClick={doGoBack}><ArrowLeft /></ArrowLefContainer>} */}
             <TitleContainer>
               {(type === 'primary' && !subtitle) && <HeaderTitle>{title}</HeaderTitle>}
               {(type === 'primary' && subtitle) && <><HeaderTitle>{title}</HeaderTitle><TitleBlack>{subtitle}</TitleBlack></>}

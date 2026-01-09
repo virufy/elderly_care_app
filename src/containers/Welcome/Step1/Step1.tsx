@@ -35,11 +35,9 @@ import {
 
 const schema = Yup.object().shape({
   // Patient ID: must be a non-negative number
-  patientId: Yup.number()
-    .typeError('Patient ID must be a number')
-    .integer('Patient ID must be an integer')
-    .min(0, 'Patient ID cannot be negative')
-    .required('Patient ID is required'),
+  patientId: Yup.string()
+    .required('Patient ID is required')
+    .matches(/^[1-9]\d*$/, 'Patient ID must be a positive whole number (1, 2, 3...)'),
   // Facility: still required, but now plain string from textbox
   facility: Yup.string()
     .required('Facility is required'),
@@ -127,13 +125,16 @@ const Step1 = (p: Wizard.StepProps) => {
             defaultValue=""
             render={({ onChange, value }) => (
               <QuestionInput
-                type="number"
+                type="text"
+                inputMode="numeric"
                 placeholder="Please enter your participant ID"
                 className="question-input"
                 value={value ?? ''}
-                // prevent negative typing in UI as well
-                min={0}
-                onChange={e => onChange(e.target.value)}
+                onChange={e => {
+                  // keep only digits
+                  const digitsOnly = e.target.value.replace(/\D/g, '');
+                  onChange(digitsOnly);
+                }}
                 autoComplete="off"
               />
             )}
