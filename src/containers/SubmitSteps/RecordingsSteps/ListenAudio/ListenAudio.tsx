@@ -25,7 +25,7 @@ import { scrollToTop } from 'helper/scrollHelper';
 // Images
 import PlaySVG from 'assets/icons/play.svg';
 import PauseSVG from 'assets/icons/pause.svg';
-import CrossSVG from 'assets/icons/cross.svg';
+// import CrossSVG from 'assets/icons/cross.svg';
 
 // Styles
 import fileHelper from 'helper/fileHelper';
@@ -37,11 +37,11 @@ import {
   PlayerContainerTop,
   PlayerContainerBottom,
   PlayerPlay,
-  PlayerCross,
+  // PlayerCross,
   PlayerTopMiddle,
   PlayerPlayButton,
   PlayerPlayContainer,
-  PlayerCrossContainer,
+  // PlayerCrossContainer,
   PlayerBottomTop,
   PlayerBottomTrack,
   PlayerBottomThumb,
@@ -69,7 +69,7 @@ const ListenAudio = ({
     bindTo: document && document.getElementById('wizard-buttons') as HTMLDivElement,
   });
   const { setDoGoBack, setTitle, setSubtitle } = useHeaderContext();
-  const history = useHistory<{isShortAudioCollection: boolean}>();
+  const history = useHistory<{ isShortAudioCollection: boolean }>();
   const location = useLocation<{ from: string, isShortAudioCollection: boolean }>();
   const { state, action } = useStateMachine(updateAction(storeKey));
   const { t } = useTranslation();
@@ -199,36 +199,34 @@ const ListenAudio = ({
     if (playing && refAudio.current) {
       refAudio.current.pause();
     }
+
     setActiveStep(false);
-    if (location.state && location.state.from) {
-      if (isCoughLogic) {
-        history.push('/elderlycare/submit-steps/step-record/cough', { isShortAudioCollection });
-      } else if (isBreathLogic) {
-        history.push('/elderlycare/submit-steps/step-record/breath');
-      } else {
-        history.push('/elderlycare/submit-steps/step-record/speech');
-      }
-    } else if (previousStep) {
-      history.push(previousStep);
+
+    if (previousStep) {
+      history.push(previousStep, { isShortAudioCollection });
     } else {
       history.goBack();
     }
-  }, [location.state, previousStep, history, isCoughLogic, isBreathLogic, isShortAudioCollection, playing]);
+  }, [playing, previousStep, history, isShortAudioCollection]);
 
   const handleRemoveFile = React.useCallback(() => {
     if (playing && refAudio.current) {
       refAudio.current.pause();
     }
 
-    if (state?.[storeKey][metadata?.currentLogic]) {
+    if (state?.[storeKey]?.[metadata?.currentLogic]) {
       action({
         [metadata?.currentLogic]: {
           recordingFile: null,
+          uploadedFile: null,
           uploadFile: null,
+          recordingUrl: undefined,
+          base64: undefined,
         },
       });
-      handleDoBack();
     }
+
+    handleDoBack();
   }, [playing, state, storeKey, metadata, action, handleDoBack]);
 
   const handlePlay = React.useCallback(() => {
@@ -311,13 +309,13 @@ const ListenAudio = ({
                 {fileName}
               </TitleAudioName>
             </PlayerTopMiddle>
-            <PlayerCrossContainer
+            {/* <PlayerCrossContainer
               onClick={handleRemoveFile}
             >
               <PlayerCross
                 src={CrossSVG}
               />
-            </PlayerCrossContainer>
+            </PlayerCrossContainer> */}
           </PlayerContainerTop>
           <PlayerContainerBottom>
             <PlayerBottomTop>
@@ -357,7 +355,7 @@ const ListenAudio = ({
             leftLabel={t('recordingsListen:next')}
             leftHandler={handleNext}
             rightLabel={t('recordingsListen:retake')}
-            rightHandler={handleDoBack}
+            rightHandler={handleRemoveFile}
           />
         </Portal>
       )}
